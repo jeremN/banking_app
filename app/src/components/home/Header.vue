@@ -1,15 +1,13 @@
-<te<template>
+<template>
     <header class="dashboard-header header">
         <ul>
             <li>
                 Dashboard
             </li>
-            <li>
-                <a class="header-link header-link-user" href="#" title="">
-                    <img src="#" alt="">
-                    <span class="link-username">{{ username }}</span>
-                    <span class="link-date">Dernière connexion: {{ time }}</span>
-                </a>
+            <li class="header-link header-link-user">
+                <img src="#" alt="">
+                <span class="link-username">{{ username }}</span>
+                <span class="link-date">Dernière connexion: {{ time }}</span>
             </li>
         </ul>
     </header>
