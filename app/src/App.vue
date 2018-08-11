@@ -1,15 +1,20 @@
 <template>
-    <router-view></router-view>
+	<div id="app" class="dashboard">
+		<app-header></app-header>
+    	<router-view></router-view>
+	</div>
 </template>
 
 <script>
-export default {
-  name: 'app',
-}
+	import Header from './components/home/Header.vue'
+
+	export default {
+	  name: 'app',
+	  components: {
+		appHeader: Header,
+	  },
+	}
 </script>
 
 <style>
-  #app {
-    height: 100;
-  }
 </style>

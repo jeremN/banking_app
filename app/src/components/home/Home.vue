@@ -1,6 +1,5 @@
 <template>
-	<div class="dashboard">
-		<app-header></app-header>
+	<div class="dashboard-main">
 		<app-sidebar></app-sidebar>
 		<app-dashboard></app-dashboard>
 		<app-footer></app-footer>
@@ -8,14 +7,12 @@
 </template>
 
 <script>
-	import Header from './Header.vue'
 	import Sidebar from './Sidebar.vue'
 	import Dashboard from './Dashboard.vue'
 	import Footer from './Footer.vue'
 
 	export default {
 		components: {
-			appHeader: Header,
 			appSidebar: Sidebar,
 			appDashboard: Dashboard,
 			appFooter: Footer

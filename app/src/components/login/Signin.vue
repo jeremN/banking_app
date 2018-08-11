@@ -23,6 +23,8 @@
 </template>
 
 <script>
+	import { mapActions, mapGetters } from 'vuex'
+
 	export default {
 		data() {
 			return {
@@ -33,8 +35,12 @@
 			}
 		},
 		methods: {
+			...mapActions({
+				signIn: 'userSignIn'
+			}),
 			onSubmit() {
-				const signinData = this.user
+				const userData = this.user
+				this.signIn(userData)
 			}
 		}
 	}

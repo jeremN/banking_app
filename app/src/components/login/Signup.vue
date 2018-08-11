@@ -1,5 +1,6 @@
 <template>
 	<form id="signUp" @submit.prevent="onSubmit">
+		<div class="modal" v-if="hasError"></div>
 		<div class="form-group">
 			<label for="signupEmail">Email</label>
 			<input 
@@ -8,25 +9,6 @@
 				name="email"
 				v-model="user.email">
 		</div>
-		<fieldset class="form-group form-group-inline">
-			<legend>Genre</legend>
-			<div class="form-group">
-				<label for="signupMr">Mr</label>
-				<input 
-					id="signupMr" 
-					type="radio" 
-					name="gender"
-					v-model="user.gender">
-			</div>
-			<div class="form-group">
-				<label for="signupMme">Mme</label>
-				<input 
-					id="signupMme" 
-					type="radio" 
-					name="gender"
-					v-model="user.gender">
-			</div>
-		</fieldset>
 		<div class="form-group">
 			<label for="signupName">Nom</label>
 			<input 
@@ -36,7 +18,7 @@
 				v-model="user.name">
 		</div>
 		<div class="form-group">
-			<label for="signupPassword">Mot de passe</label>
+			<label for="signupPassword">Mot de passe<small>6 caractères minimum</small></label>
 			<input 
 				id="signupPassword" 
 				type="password" 
@@ -52,12 +34,18 @@
 				v-model="user.confirmPassword">
 		</div>
 		<div class="form-group">
-			<button class="btn" type="submit">Valider</button>
+			<button 
+				class="btn" 
+				type="submit">
+				Valider
+			</button>
 		</div>
 	</form>
 </template>
 
 <script>
+	import { mapActions, mapGetters } from 'vuex'
+
 	export default {
 		data() {
 			return {
@@ -66,15 +54,42 @@
 					name: '',
 					password: '',
 					confirmPassword: '',
-					gender: ''
 				}
 			}
 		},
+		computed: {
+			...mapGetters({
+				hasError: 'getSignUpError'
+			})
+		},
 		methods: {
+			...mapActions({
+				signUp: 'userSignUp'
+			}),
 			onSubmit() {
-				const signupData = this.user
-				console.log(signupData)
+				const userData = {
+					email: this.user.email,
+					name: this.user.name,
+					password: this.user.password,
+				}
+				console.log(userData)
+				this.signUp(userData)
+
 			}
 		}
 	}
 </script>
+
+<style lang="scss" scoped>
+	.form-group.invalid {
+		label {
+			color: red;
+		}
+		input {
+			border-color: red;
+		}
+	}
+	small {
+		font-size: 12px;
+	}
+</style>
