@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import axios from 'axios'
+import firebase from 'firebase'
 
 const initialState = () => {
 	return {
