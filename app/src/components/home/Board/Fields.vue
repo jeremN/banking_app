@@ -44,10 +44,11 @@
 				type="text"
 				name="amount"
 				required
-				v-model="expense.amount">
+				v-model="expense.value">
 		</div>
 		<div class="form-group">
 			<button 
+				@click="fakeData"
 				class="btn btn-submit fas fa-plus" 
 				type="submit">
 			</button>
@@ -66,13 +67,14 @@
 					category: '',
 					date: '',
 					type: '',
-					amount: ''
+					value: ''
 				}
 			}
 		},
 		methods: {
 			...mapActions({
 				createExpense: 'Set_Expenses',
+				fakeData: 'Add_FakeDatas'
 			}),
 			newExpense() {
 				let newItem = this.expense
@@ -87,7 +89,7 @@
 					category: '',
 					date: '',
 					type: '',
-					amount: ''
+					value: ''
 				}
 			},
 		}

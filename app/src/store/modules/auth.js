@@ -125,7 +125,8 @@ const getters = {
 	isAuthenticated( state ) {
 		console.log(state.user)
 		console.log(state.user !== null)
-		return state.user !== null
+		//return state.user !== null
+		return true//only for test
 	},
 	getSignUpError( state ) {
 		return state.error !== null

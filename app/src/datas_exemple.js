@@ -30,7 +30,7 @@ user: {
 		},
 		datas: [
 			{
-				year: 2018,
+				year: 2017,
 				months: [
 					{
 						month: 'december',
@@ -44,7 +44,7 @@ user: {
 							}
 						]
 					}
-				]
+				],
 				currentMonth: [
 					{
 						name: 'name',
@@ -56,9 +56,25 @@ user: {
 				]
 			},
 		],
+		temp: {
+			currentYear: 2018,
+			currentMonth: 
+		}
 		search: {
 			categories: [ ...cats ],
 			names: [ ...names ]
 		}
 	}
+}
+
+firebase rules : 
+{
+  "rules": {
+    "users": {
+      "$uid": {
+        ".read": "auth != null && auth.uid == $uid",
+        ".write": "auth != null && auth.uid == $uid"
+      }
+    }
+  }
 }
