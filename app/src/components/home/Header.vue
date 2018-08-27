@@ -18,15 +18,16 @@
             </li>
             <li class="header-link header-link-user" v-if="isAuth">
                 <img src="#" alt="">
-                <span class="link-username">{{ username }}</span>
+                <span class="link-username">{{ userInfos.name }}</span>
                 <span class="link-date">Dernière connexion: {{ time }}</span>
+                <button type="button" @click.prevent="logout">logOut</button>
             </li>
         </ul>
     </header>
 </template>
 
 <script>
-    import {mapGetters} from 'vuex'
+    import {mapActions, mapGetters} from 'vuex'
 
 	export default {
 		data() {
@@ -37,7 +38,13 @@
 		},
         computed: {
             ...mapGetters({
-                isAuth: 'isAuthenticated'
+                isAuth: 'isAuthenticated',
+                userInfos: 'user'
+            })
+        },
+        methods: {
+            ...mapActions({
+                logout: 'userSignOut'
             })
         }
 	}

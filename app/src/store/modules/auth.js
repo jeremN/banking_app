@@ -4,11 +4,16 @@ import router from '../../routes'
 import firebase from 'firebase'
 import moment from 'moment'
 
+const now = moment().format('DD MM YYYY')
 const initialState = () => {
 	return {
 		user: null,
 		loading: false,
-		error: null
+		error: null,
+		connection: {
+			last: null,
+			actual: now
+		}
 	}
 }
 
@@ -17,8 +22,12 @@ const state = initialState()
 const getTime = () => {}
 
 const mutations = {
-	setUser( state, datas ) {
-		state.user = datas
+	setUser( state, payload ) {
+		state.user = Object.assign({}, payload)
+		console.log(state)
+	},
+	setConnection( state, payload ) {
+
 	},
 	clearState( state ) {
 		state = initialState()
@@ -40,24 +49,25 @@ const mutations = {
 }
 
 const actions = {
-	userSignUp( {commit, dispatch}, datas ) {
+	userSignUp( {commit, dispatch}, payload ) {
 		commit('setLoading', true)
 		commit('clearError')
-		const now = moment().format('DD MM YYYY')
-		firebase.auth().createUserWithEmailAndPassword(datas.email, datas.password)
+		firebase.auth().createUserWithEmailAndPassword(payload.email, payload.password)
 			.then( res => {
 				const newUser = {
 					id: res.user.uid,
 					email: res.user.email,
-					name: datas.name,
-					lastConnection: null,
-					actualConnection: null,
+					name: payload.name,
 					verified: res.user.emailVerified,
 					created: now
 				}
+				const newConnection = {
+					lastConnection: now,
+				}
+				commit('setConnection', newConnection)
 				commit('setUser', newUser)
 				commit('setLoading', false)
-				dispatch('addData')
+				dispatch('set_UserProfile')
 				router.push('Home')
 			})
 			.catch( error => {
@@ -66,55 +76,64 @@ const actions = {
 				commit('setError', error)
 			})
 	},
-	addData( {commit, state}, datas ) {
-		const userProfile = {
-			id: state.user.id,
-			name: state.user.name,
-			verified: state.user.verified,
-			create: state.user.created,
-			lastConnection: state.user.lastConnection
+	set_UserProfile( {commit, state}, payload ) {
+		firebase.database().ref('/users/'+state.user.id+'/').set({
+			profile: {
+				id: state.user.id,
+				name: state.user.name,
+				verified: state.user.verified,
+				create: state.user.created,
+				lastConnection: state.user.lastConnection
+			}
+		})
+	},
+	get_UserProfile( {commit} ) {
+		if(!state.user.id) {
+			return
 		}
-		firebase.database().ref('/users/'+state.user.id+'/profile/').push(userProfile)
+		let db = firebase.database().ref('/users/'+state.user.id+'/profile/')
+		db.once('value').then(function(payload) {
+			console.log(payload.val())
+			commit('setUser', payload.val())
+		})
 	},
-	getData( {commit}, datas ) {
-
-	},
-	userSignIn( {commit, dispatch}, datas ) {
+	userSignIn( {commit, dispatch}, payload ) {
 		commit('setLoading', true)
 		commit('clearError')
-		firebase.auth().signInWithEmailAndPassword(datas.email, datas.password)
-			.then( user => {
-				console.log(user)
+		firebase.auth().signInWithEmailAndPassword(payload.email, payload.password)
+			.then( res => {
+				console.log(res)
 				const newUser = {
-					id: user.uid,
-					email: user.email,
+					id: res.user.uid,
+					email: res.user.email,
 					name: '',
 					lastConnection: null,
 					actualConnection: null,
-					verified: user.emailVerified,
-					//created: 
+					verified: res.user.emailVerified,
 				}
 				commit('setUser', newUser)
 				commit('setLoading', false)
+				dispatch('get_UserProfile')
 				router.push('Home')
 			})
 			.catch( error => {
-				console.log(error)
 				commit('setLoading', false)
 				commit('setError', error)
 			})
 	},
 	userSignOut( {commit} ) {
 		firebase.auth().signOut()
-			.then( () => {
-
-			})
-			.catch( error => {
-				console.log(error)
-			})
+		commit('clearState')
 	},
 	authStateChange( {commit} ) {
 
+	},
+	autoSignIn( {commit}, payload ) {
+		const user = {
+			id: payload.uid,
+			email: payload.email
+		}
+		commit('setUser', user)
 	}
 }
 
@@ -123,10 +142,7 @@ const getters = {
 		return state.user
 	},
 	isAuthenticated( state ) {
-		console.log(state.user)
-		console.log(state.user !== null)
-		//return state.user !== null
-		return true//only for test
+		return state.user !== null
 	},
 	getSignUpError( state ) {
 		return state.error !== null

@@ -33,8 +33,8 @@
 				required
 				v-model="expense.type">
 				<option disabled value="">Choisir un type</option>
-				<option >Dépense</option>
-				<option>Revenu</option>
+				<option value="outcome">Dépense</option>
+				<option value="income">Revenu</option>
 			</select>
 		</div>
 		<div class="form-group">
@@ -50,7 +50,7 @@
 			<button 
 				@click="fakeData"
 				class="btn btn-submit fas fa-plus" 
-				type="submit">
+				type="button">
 			</button>
 		</div>
 	</form>
@@ -74,7 +74,7 @@
 		methods: {
 			...mapActions({
 				createExpense: 'Set_Expenses',
-				fakeData: 'Add_FakeDatas'
+				fakeData: 'Get_Temporary'
 			}),
 			newExpense() {
 				let newItem = this.expense

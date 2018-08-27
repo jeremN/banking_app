@@ -3,7 +3,8 @@
         <span class="list-item">{{ expense.name }}</span>
         <span class="list-item">{{ expense.category }}</span>
         <span class="list-item">{{ expense.date }}</span>
-        <span class="list-item">{{ expense.amount }}</span>
+        <span class="list-item">{{ expense.value }}€</span>
+        <span class="list-item">{{ itemType(expense.type) }}</span>
         <button 
         	class="list-item btn btn-delete"
         	@click.prevent="deleteItem">
@@ -26,7 +27,10 @@
 			},
 			editItem() {
 
-			}
+			},
+            itemType(type) {
+                return type === 'outcome' ? 'Dépense' : 'Revenu'
+            }
 		}
 
 	}
