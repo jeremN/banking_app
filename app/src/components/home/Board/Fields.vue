@@ -25,7 +25,8 @@
 				id="expenseDate" 
 				type="date" 
 				name="date"
-				v-model="expense.date">
+				v-model="expense.date"
+				v-on:blur="formatDate">
 		</div>
 		<div class="form-group">
 			<label for="expenseType">Type</label>
@@ -48,9 +49,8 @@
 		</div>
 		<div class="form-group">
 			<button 
-				@click="fakeData"
 				class="btn btn-submit fas fa-plus" 
-				type="button">
+				type="submit">
 			</button>
 		</div>
 	</form>
@@ -58,6 +58,7 @@
 
 <script>
 	import {mapActions} from 'vuex'
+	import moment from 'moment'
 
 	export default {
 		data() {
@@ -73,17 +74,13 @@
 		},
 		methods: {
 			...mapActions({
-				createExpense: 'Set_Expenses',
-				fakeData: 'Get_Temporary'
+				addExpenses:'Post_Expenses'
 			}),
+			formatDate() {
+				return moment(this.expense.category, 'YYYY-MM-DD').format('DD/MM/YYYY')
+			},
 			newExpense() {
-				let newItem = this.expense
-				Object.keys(newItem).map( field => {
-					if( !field.length ) {
-						return
-					}
-				})
-				this.createExpense(newItem)
+				this.addExpenses(this.expense)
 				this.expense = {
 					name: '',
 					category: '',

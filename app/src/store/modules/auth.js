@@ -4,16 +4,15 @@ import router from '../../routes'
 import firebase from 'firebase'
 import moment from 'moment'
 
-const now = moment().format('DD MM YYYY')
+const currentDate = moment().format('DD/MMMM/YYYY')
+const currentYear = moment().format('YYYY')
+const currentMonth = moment().format('MMMM')
+
 const initialState = () => {
 	return {
 		user: null,
 		loading: false,
-		error: null,
-		connection: {
-			last: null,
-			actual: now
-		}
+		error: null
 	}
 }
 
@@ -22,20 +21,16 @@ const state = initialState()
 const getTime = () => {}
 
 const mutations = {
-	setUser( state, payload ) {
+	set_User( state, payload ) {
 		state.user = Object.assign({}, payload)
-		console.log(state)
-	},
-	setConnection( state, payload ) {
-
 	},
 	clearState( state ) {
 		state = initialState()
 	},
-	setLoading( state, bool ) {
+	set_Loading( state, bool ) {
 		state.loading = bool
 	},
-	setError( state, error ) {
+	set_Error( state, error ) {
 		console.log(error)
 		const hasError = {
 			msg: error.errorMessage,
@@ -43,15 +38,15 @@ const mutations = {
 		}
 		state.error = error
 	},
-	clearError( state ) {
+	clear_Error( state ) {
 		state.error = null
 	}
 }
 
 const actions = {
-	userSignUp( {commit, dispatch}, payload ) {
-		commit('setLoading', true)
-		commit('clearError')
+	user_SignUp( {commit, dispatch}, payload ) {
+		commit('set_Loading', true)
+		commit('clear_Error')
 		firebase.auth().createUserWithEmailAndPassword(payload.email, payload.password)
 			.then( res => {
 				const newUser = {
@@ -59,23 +54,19 @@ const actions = {
 					email: res.user.email,
 					name: payload.name,
 					verified: res.user.emailVerified,
-					created: now
+					created: currentDate
 				}
-				const newConnection = {
-					lastConnection: now,
-				}
-				commit('setConnection', newConnection)
-				commit('setUser', newUser)
-				commit('setLoading', false)
+				commit('set_User', newUser)
+				commit('set_Loading', false)
 				dispatch('set_UserProfile')
 				router.push('Home')
 			})
 			.catch( error => {
-				console.log(error)
-				commit('setLoading', false)
-				commit('setError', error)
+				commit('set_Loading', false)
+				commit('set_Error', error)
 			})
 	},
+	//Set default datas properties for user (profile, datas etc...)
 	set_UserProfile( {commit, state}, payload ) {
 		firebase.database().ref('/users/'+state.user.id+'/').set({
 			profile: {
@@ -83,26 +74,43 @@ const actions = {
 				name: state.user.name,
 				verified: state.user.verified,
 				create: state.user.created,
-				lastConnection: state.user.lastConnection
+			},
+			datas: {
+				temporary: {
+					activeMonth: currentMonth,
+					activeYear: currentYear,
+					currentExpenses: false
+				},
+				expenses: false,
+				searches: {
+					categories: false,
+					names: false
+				}
 			}
 		})
 	},
-	get_UserProfile( {commit} ) {
-		if(!state.user.id) {
-			return
-		}
-		let db = firebase.database().ref('/users/'+state.user.id+'/profile/')
-		db.once('value').then(function(payload) {
-			console.log(payload.val())
-			commit('setUser', payload.val())
+	get_UserProfile( {commit, dispatch, rootState} ) {
+		if(!state.user.id) { return }
+		firebase.database().ref('/users/'+state.user.id+'/profile/').once('value')
+			.then((payload) => { 
+				commit('set_User', payload.val()) 
+				dispatch('get_UserDatas')
+			})
+	},
+	get_UserDatas( {commit, rootState} ) {
+		let datas = firebase.database().ref(`/users/${rootState.auth.user.id}/datas/`)
+		datas.once('value', function(d) {
+			rootState.payload.items = d.val().temporary.currentExpenses
+			rootState.payload.savedMonth = d.val().temporary.currentMonth
+			rootState.payload.savedYear = d.val().temporary.currentYear
+			console.log(rootState.payload)
 		})
 	},
-	userSignIn( {commit, dispatch}, payload ) {
-		commit('setLoading', true)
-		commit('clearError')
+	user_SignIn( {commit, dispatch}, payload ) {
+		commit('set_Loading', true)
+		commit('clear_Error')
 		firebase.auth().signInWithEmailAndPassword(payload.email, payload.password)
 			.then( res => {
-				console.log(res)
 				const newUser = {
 					id: res.user.uid,
 					email: res.user.email,
@@ -111,29 +119,29 @@ const actions = {
 					actualConnection: null,
 					verified: res.user.emailVerified,
 				}
-				commit('setUser', newUser)
-				commit('setLoading', false)
+				commit('set_User', newUser)
+				commit('set_Loading', false)
 				dispatch('get_UserProfile')
 				router.push('Home')
 			})
 			.catch( error => {
-				commit('setLoading', false)
-				commit('setError', error)
+				commit('set_Loading', false)
+				commit('set_Error', error)
 			})
 	},
-	userSignOut( {commit} ) {
+	user_SignOut( {commit} ) {
 		firebase.auth().signOut()
 		commit('clearState')
+		router.push('/')
 	},
-	authStateChange( {commit} ) {
-
-	},
-	autoSignIn( {commit}, payload ) {
+	auto_SignIn( {commit, dispatch}, payload ) {
 		const user = {
 			id: payload.uid,
 			email: payload.email
 		}
-		commit('setUser', user)
+		commit('set_User', user)
+		dispatch('get_UserProfile')
+		router.push('Home')
 	}
 }
 
@@ -144,7 +152,7 @@ const getters = {
 	isAuthenticated( state ) {
 		return state.user !== null
 	},
-	getSignUpError( state ) {
+	hasError( state ) {
 		return state.error !== null
 	}
 }

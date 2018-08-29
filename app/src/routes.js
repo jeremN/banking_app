@@ -17,8 +17,7 @@ const routes = [
 		name: 'Home',
 		component: Home,
 		beforeEnter(to, from, next) {
-			console.log(store.state.user !== null)
-			store.state.user !== null ? next() : next('/')
+			store.state.user !== null && from.path !== '/Home' ? next() : next('/')
 		}
 	},
 	{

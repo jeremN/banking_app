@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import axios from 'axios'
 import firebase from 'firebase'
+import moment from 'moment'
 
 import * as fakeDatas from '../../fakeDatas.json'
 
@@ -10,58 +11,56 @@ const initialState = () => {
 		months: [],
 		savedYear: null,
 		savedMonth: null,
-		currentMonth: null,
-		currentYear: null
+		currentMonth: moment().format('MMMM'),
+		currentYear: moment().format('YYYY')
 	}
 }
 const datas = JSON.stringify(fakeDatas);
-//console.log(datas)
 const state = initialState()
 
+
 const mutations = {
-	New_Expenses( state, payload ) {
+	Add_Expenses( state, payload ) {
+		if(!state.items) {
+			state.items = []
+		}
 		state.items.push(payload)
 	},
-	Set_Currents( state, payload ) {
-		state.savedMonth = payload.currentMonth
-		state.savedYear = payload.currentYear
+	Remove_Expenses( state, index ) {
+		if(state.items.length) {
+			state.items.slice(index, 1)
+		}
 	},
-	Set_CurrentExpenses( state, payload ) {
-		state.items = payload
-		console.log(state.items)
+	Set_Currents( state ) {
 	}
 }
 
 const actions = {
-	Add_FakeDatas( {commit} ) {
-		const Test = fakeDatas
-		firebase.database().ref('/test/userDatas').push(fakeDatas)
-			.then(res => console.log(res))
-			.catch(err => console.log(err))
-
-	},
-	Get_Temporary( {commit}, payload ) {
-		let datas = firebase.database().ref('/test/userDatas')
-		datas.on('value', function(data) {
-			data.forEach( function(d) {
-				let dataChild = d.val()
-				console.log(dataChild)
-				commit('Set_Currents', dataChild.dataTemp)
-				commit('Set_CurrentExpenses', dataChild.datas[0].current.expenses)
-			})
+	Post_FakeDatas( {commit, rootState}, field ) {
+		firebase.database().ref(`/users/${rootState.auth.user.id}/datas/`).set({
+			expenses: fakeDatas.expenses,
+			temporary: fakeDatas.temporary,
+			searches: {
+				categories: fakeDatas.searches.categories,
+				names: fakeDatas.searches.names
+			}
 		})
+		.then(res => console.log(res))
+		.catch(err => console.log(res))
 	},
-	Set_Expenses( {commit}, payload ) {
-		commit('New_Expenses', payload)
+	Post_Expenses( {commit, state, rootState}, payload ) {
+		let expensesArray = !state.items ? [] : state.items
+		expensesArray.push(payload)
+		commit('Add_Expenses', payload)
+		firebase.database().ref(`/users/${rootState.auth.user.id}/datas/temporary/currentExpenses`).set(expensesArray)
 	},
-	Post_Expenses( {commit}, payload ) {
-
+	Delete_Expenses( {commit}, payload ) {
+		
 	}
 }
 
 const getters = {
-	Return_Expenses( state, getters ) {
-		console.log(state.items)
+	Return_Expenses( state, rootState, getters ) {
 		return state
 	}
 }

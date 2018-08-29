@@ -3,7 +3,7 @@ user: {
 	emailVerified: false,
 	providerData: [
 		{
-			displayName:n ull
+			displayName:null
 			email: "toto@toto.fr"
 			phoneNumber: null
 			photoURL: null
@@ -25,10 +25,13 @@ user: {
 			uid: 'userUID',
 			password: 'userPassword',
 			created: 'date',
-			last_connexion: 'date',
-			verified: 'false'
+			verified: 'false',
+			connexionIndex: [
+				{date},
+				{date}...
+			]
 		},
-		datas: [
+		expenses: [
 			{
 				year: 2017,
 				months: [
@@ -56,7 +59,7 @@ user: {
 				]
 			},
 		],
-		temp: {
+		temporary: {
 			currentYear: 2018,
 			currentMonth: 
 		}

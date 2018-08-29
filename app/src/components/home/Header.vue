@@ -1,27 +1,28 @@
 <template>
     <header class="dashboard-header header">
         <h1>Dashboard</h1>
-        <ul>
+        <ul v-if="isAuth">
+            <li class="header-link header-link-user">
+                <img src="#" alt="">
+                <span class="link-username">{{ userInfos.name }}</span>
+                <span class="link-date">Dernière connexion: {{ time }}</span>
+                <button type="button" @click="logOut">Logout</button>
+            </li>
+        </ul>
+        <ul v-else>
             <li>
                 <router-link 
-                    to="Signin"
-                    v-if="!isAuth">
+                    to="Signin">
                     Se connecter
                 </router-link>
             </li>
             <li>
                 <router-link 
-                    to="Signup"
-                    v-if="!isAuth">
+                    to="Signup">
                     S'enregistrer
                 </router-link>
             </li>
-            <li class="header-link header-link-user" v-if="isAuth">
-                <img src="#" alt="">
-                <span class="link-username">{{ userInfos.name }}</span>
-                <span class="link-date">Dernière connexion: {{ time }}</span>
-                <button type="button" @click.prevent="logout">logOut</button>
-            </li>
+
         </ul>
     </header>
 </template>
@@ -44,8 +45,11 @@
         },
         methods: {
             ...mapActions({
-                logout: 'userSignOut'
-            })
+                logout: 'user_SignOut'
+            }),
+            logOut() {
+                this.logout()
+            }
         }
 	}
 </script>

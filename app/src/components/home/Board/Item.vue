@@ -1,21 +1,23 @@
 <template>
-    <div class="list-group-item list-body">
-        <span class="list-item">{{ expense.name }}</span>
-        <span class="list-item">{{ expense.category }}</span>
-        <span class="list-item">{{ expense.date }}</span>
-        <span class="list-item">{{ expense.value }}€</span>
-        <span class="list-item">{{ itemType(expense.type) }}</span>
-        <button 
-        	class="list-item btn btn-delete"
-        	@click.prevent="deleteItem">
-            <i class="far fa-trash-alt"></i>
-        </button>
-        <button 
-        	class="list-item btn btn-edit"
-        	@click.prevent="editItem">
-            <i class="fas fa-edit"></i>
-        </button>
-    </div>
+    <tr>
+        <td>{{ expense.name }}</td>
+        <td>{{ expense.category }}</td>
+        <td>{{ expense.date }}</td>
+        <td>{{ expense.value }}€</td>
+        <td>{{ itemType(expense.type) }}</td>
+        <td style="display: flex;">
+            <button 
+            	class="list-item btn btn-delete"
+            	@click.prevent="deleteItem">
+                <i class="far fa-trash-alt"></i>
+            </button>
+            <button 
+            	class="list-item btn btn-edit"
+            	@click.prevent="editItem">
+                <i class="fas fa-edit"></i>
+            </button>
+        </td>
+    </tr>
 </template>
 
 <script>
@@ -36,3 +38,9 @@
 	}
 	
 </script>
+
+<style lang="scss" scoped>
+    .btn {
+        cursor: pointer;
+    }
+</style>

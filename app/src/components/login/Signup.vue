@@ -59,12 +59,12 @@
 		},
 		computed: {
 			...mapGetters({
-				hasError: 'getSignUpError'
+				hasError: 'hasError'
 			})
 		},
 		methods: {
 			...mapActions({
-				signUp: 'userSignUp'
+				signUp: 'user_SignUp'
 			}),
 			onSubmit() {
 				const userData = {

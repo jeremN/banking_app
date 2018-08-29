@@ -36,7 +36,7 @@
 		},
 		methods: {
 			...mapActions({
-				signIn: 'userSignIn'
+				signIn: 'user_SignIn'
 			}),
 			onSubmit() {
 				const userData = this.user
