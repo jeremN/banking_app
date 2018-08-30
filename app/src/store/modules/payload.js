@@ -21,22 +21,14 @@ const state = initialState()
 
 const mutations = {
 	Add_Expenses( state, payload ) {
-		if(!state.items) {
-			state.items = []
-		}
-		state.items.push(payload)
-	},
-	Remove_Expenses( state, index ) {
-		if(state.items.length) {
-			state.items.slice(index, 1)
-		}
+		state.items = payload
 	},
 	Set_Currents( state ) {
 	}
 }
 
 const actions = {
-	Post_FakeDatas( {commit, rootState}, field ) {
+	/*Post_FakeDatas( {commit, rootState}, field ) {
 		firebase.database().ref(`/users/${rootState.auth.user.id}/datas/`).set({
 			expenses: fakeDatas.expenses,
 			temporary: fakeDatas.temporary,
@@ -47,20 +39,60 @@ const actions = {
 		})
 		.then(res => console.log(res))
 		.catch(err => console.log(res))
-	},
+	},*/
 	Post_Expenses( {commit, state, rootState}, payload ) {
+		//if state.item false then it's an empty array, else if equal state.item
 		let expensesArray = !state.items ? [] : state.items
-		expensesArray.push(payload)
-		commit('Add_Expenses', payload)
-		firebase.database().ref(`/users/${rootState.auth.user.id}/datas/temporary/currentExpenses`).set(expensesArray)
-	},
-	Delete_Expenses( {commit}, payload ) {
 		
+		//push new expense
+		expensesArray.push(payload)
+		
+		//add to database
+		firebase.database().ref(`/users/${rootState.auth.user.id}/datas/temporary/currentExpenses`).set(expensesArray)
+		
+		//commit to mutation
+		commit('Add_Expenses', expensesArray)
+	},
+	Delete_Expenses( {commit, rootState, state}, payload ) {
+		let expensesArray = state.items
+		
+		//remove expense from array
+		expensesArray.splice(payload, 1)
+		
+		//if array is empty then equal false
+		if(!expensesArray.length) { expensesArray = false }
+		
+		//send to database
+		firebase.database().ref(`/users/${rootState.auth.user.id}/datas/temporary/currentExpenses`).set(expensesArray)
+		
+		//commit to mutation
+		commit('Add_Expenses', expensesArray)
+	},
+	Edit_Expenses( {commit, rootState, state}, payload ) {
+		let expensesArray = state.items
+		
+		//search item, if index equal to id then replace existing item by edited one
+		expensesArray.map( (current, index) => {
+			if(index === payload.id) {
+				return current = payload.item
+			}
+		})
+
+		console.log(expensesArray)
+
+		//send to database
+		firebase.database().ref(`/users/${rootState.auth.user.id}/datas/temporary/currentExpenses`).set(expensesArray)
+		
+		//commit to mutation
+		commit('Add_Expenses', expensesArray)
 	}
 }
 
 const getters = {
 	Return_Expenses( state, rootState, getters ) {
+		return state.items
+	},
+	Return_State( state, getters ) {
 		return state
 	}
 }

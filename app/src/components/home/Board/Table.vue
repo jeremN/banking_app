@@ -13,9 +13,10 @@
             </thead>
             <tbody>
                 <app-item v-if="expenses.items" 
-                    v-for="expense, index in expenses.items" 
-                    :expense="expense" 
-                    :key="index">
+                    v-for="(item, index) in expenses.items" 
+                    :expense="item" 
+                    :key="index"
+                    :id="index">
                 </app-item>
             </tbody>
             <tfoot>
@@ -42,16 +43,18 @@
                     cat: '',
                     outcome: '',
                     income: ''
+                },
+                sort: {
+                    date: 'asc',
+                    value: '',
+                    type: '' 
                 }
             }
         },
         computed: {
             ...mapGetters({
-                expenses: 'Return_Expenses'
+                expenses: 'Return_State'
             }),
-            totals() {
-
-            }
         },
         components: {
             appItem: Item
@@ -60,10 +63,29 @@
 	
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
     .table-container {
         width: 100%;
         display: flex;
     }
-    table { width: 100%; }
+    table {
+        width: 100%;
+
+        tr > td { 
+            background-color: #fff;
+            padding: 0.5em 0;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+        thead, tfoot {
+            tr > td { padding: 1em 0; }
+        }
+    }
+    thead {
+        tr > td { background-color: #f9f8fd; }
+    }
+    tfoot {
+        tr > td { background-color: #f8f7fd; }
+    }
 </style>

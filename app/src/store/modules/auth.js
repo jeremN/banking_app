@@ -89,6 +89,7 @@ const actions = {
 			}
 		})
 	},
+	//Get saved user profile
 	get_UserProfile( {commit, dispatch, rootState} ) {
 		if(!state.user.id) { return }
 		firebase.database().ref('/users/'+state.user.id+'/profile/').once('value')
@@ -97,15 +98,18 @@ const actions = {
 				dispatch('get_UserDatas')
 			})
 	},
+	//Get saved user datas
 	get_UserDatas( {commit, rootState} ) {
 		let datas = firebase.database().ref(`/users/${rootState.auth.user.id}/datas/`)
 		datas.once('value', function(d) {
 			rootState.payload.items = d.val().temporary.currentExpenses
 			rootState.payload.savedMonth = d.val().temporary.currentMonth
 			rootState.payload.savedYear = d.val().temporary.currentYear
-			console.log(rootState.payload)
 		})
+			.then(res => console.log(res))
+			.catch(err => console.log(err))
 	},
+	//Sign in
 	user_SignIn( {commit, dispatch}, payload ) {
 		commit('set_Loading', true)
 		commit('clear_Error')
@@ -129,11 +133,13 @@ const actions = {
 				commit('set_Error', error)
 			})
 	},
+	//Sign out
 	user_SignOut( {commit} ) {
 		firebase.auth().signOut()
 		commit('clearState')
 		router.push('/')
 	},
+	//Auto sign in
 	auto_SignIn( {commit, dispatch}, payload ) {
 		const user = {
 			id: payload.uid,
