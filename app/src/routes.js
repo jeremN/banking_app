@@ -8,6 +8,7 @@ import Main from './components/home/Main.vue'
 import Signup from './components/login/Signup.vue'
 import Signin from './components/login/Signin.vue'
 import Notfound from './components/home/Notfound.vue'
+import LastYear from './components/home/Olders/LastYear.vue'
 
 Vue.use(VueRouter)
 
@@ -34,6 +35,11 @@ const routes = [
 		path: '/Signin',
 		name: 'Signin',
 		component: Signin
+	},
+	{
+		path: '/LastYear',
+		name: 'Lastyear',
+		component: LastYear
 	},
 	{
 		path: '*',

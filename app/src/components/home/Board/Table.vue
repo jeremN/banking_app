@@ -21,10 +21,10 @@
             </tbody>
             <tfoot>
                 <tr>
-                    <td>{{ total.expenses }}</td>
-                    <td>{{ total.cat }}</td>
-                    <td>{{ total.outcome }}</td>
-                    <td>{{ total.income }}</td>
+                    <td>{{ expenses.items.length }} éléments enregistrés</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
                 </tr>
             </tfoot>
         </table>
@@ -38,12 +38,6 @@
     export default {
         data() {
             return  {
-                total: {
-                    expenses: '',
-                    cat: '',
-                    outcome: '',
-                    income: ''
-                },
                 sort: {
                     date: 'asc',
                     value: '',
@@ -53,7 +47,7 @@
         },
         computed: {
             ...mapGetters({
-                expenses: 'Return_State'
+                expenses: 'Return_State',
             }),
         },
         components: {

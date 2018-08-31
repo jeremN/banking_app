@@ -3,14 +3,14 @@
         <div class="stats-group">
             <p>
                 revenus 
-                <span v-if="expenses.length">{{ earnings | addDevise }}</span>
+                <span v-if="expenses.items.length">{{ earnings | addDevise }}</span>
                 <span v-else>0€</span>
             </p>
         </div>
         <div class="stats-group">
             <p>
                 dépenses 
-                <span v-if="expenses.length">{{ spending | addDevise }}</span>
+                <span v-if="expenses.items.length">{{ spending | addDevise }}</span>
                 <span v-else>0€</span>
             </p>
         </div>
@@ -38,20 +38,23 @@
         },
         computed : {
             ...mapGetters({
-                expenses: 'Return_Expenses'
+                expenses: 'Return_State'
             }),
             earnings() {
                 return this.sum(this.resultByType("income"))  
             },
             spending() {
                 return this.sum(this.resultByType("outcome"))  
+            },
+            compare() {
+
             }
         },
         methods: {
             resultByType(type) {
-                if(!this.expenses)  return;
+                if(!this.expenses.items)  return;
                 let tempArray = []
-                this.expenses.find( a => {
+                this.expenses.items.find( a => {
                     if (a.type === type) {
                         tempArray.push(Number(a.value) ) 
                     }  
@@ -61,6 +64,9 @@
             sum(array) {
                 if(!array || !array.length) return;
                 return array.reduce((a, b) => a + b )
+            },
+            prevMonthComparison() {
+                
             }
         }
     }

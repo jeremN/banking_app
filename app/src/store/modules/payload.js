@@ -8,14 +8,19 @@ import * as fakeDatas from '../../fakeDatas.json'
 const initialState = () => {
 	return {
 		items: [],
-		months: [],
+		expenses: [],
 		savedYear: null,
 		savedMonth: null,
-		currentMonth: moment().format('MMMM'),
-		currentYear: moment().format('YYYY')
+		currentMonth: '',
+		currentYear: '',
+		popin:  {
+			isActiv: false,
+			message: '',
+			type: ''
+		}
 	}
 }
-const datas = JSON.stringify(fakeDatas);
+const datas = JSON.stringify(fakeDatas)
 const state = initialState()
 
 
@@ -24,6 +29,17 @@ const mutations = {
 		state.items = payload
 	},
 	Set_Currents( state ) {
+	},
+	Set_Dates( state, payload ) {
+		state.curentMonth = payload.month
+		state.currentYear = payload.year
+	},
+	Set_Popin( state, payload ) {
+		state.popin = {
+			isActiv: payload.isActiv,
+			message: payload.message,
+			type: payload.type 
+		}
 	}
 }
 
@@ -78,13 +94,17 @@ const actions = {
 			}
 		})
 
-		console.log(expensesArray)
-
 		//send to database
 		firebase.database().ref(`/users/${rootState.auth.user.id}/datas/temporary/currentExpenses`).set(expensesArray)
 		
 		//commit to mutation
 		commit('Add_Expenses', expensesArray)
+	},
+	Current_Date( {commit, dispatch}, payload ) {
+
+	},
+	Post_PrevExpenses( {commit, state, rootState}, payload, type ) {
+
 	}
 }
 
@@ -94,6 +114,12 @@ const getters = {
 	},
 	Return_State( state, getters ) {
 		return state
+	},
+	Return_2017( state, getters ) {
+		return state.expenses
+	},
+	Return_Popin( state, getters ) {
+		return state.popin
 	}
 }
 

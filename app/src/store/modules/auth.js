@@ -103,10 +103,28 @@ const actions = {
 		let datas = firebase.database().ref(`/users/${rootState.auth.user.id}/datas/`)
 		datas.once('value', function(d) {
 			rootState.payload.items = d.val().temporary.currentExpenses
-			rootState.payload.savedMonth = d.val().temporary.currentMonth
-			rootState.payload.savedYear = d.val().temporary.currentYear
+			rootState.payload.savedMonth = d.val().temporary.activeMonth
+			rootState.payload.savedYear = d.val().temporary.activeYear
+			rootState.payload.expenses = d.val().expenses
 		})
-			.then(res => console.log(res))
+			.then(() => {
+				rootState.payload.currentMonth = currentMonth
+				rootState.payload.currentYear = currentYear
+				if(rootState.payload.savedMonth !== currentMonth) {
+					rootState.payload.popin = {
+						isActiv: true,
+						message: 'La sauvegarde du mois précédent va commencer',
+						type: 'month'
+					}
+				}
+				/*else if( rootState.payload.savedYear !== currentYear) {
+					rootState.payload.popin = {
+						isActiv: true,
+						message: 'La sauvegarde de l\'année précédente va commencer',
+						type: 'year'
+					}
+				}*/
+			})
 			.catch(err => console.log(err))
 	},
 	//Sign in
@@ -147,7 +165,6 @@ const actions = {
 		}
 		commit('set_User', user)
 		dispatch('get_UserProfile')
-		router.push('Home')
 	}
 }
 
