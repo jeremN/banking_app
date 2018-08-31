@@ -1,21 +1,10 @@
 <template>
-    <tr>
+    <tr :id="id">
+        <td><span>{{ expense.month }}</span></td>
+        <td><span>{{ expense.outcome | addDevise }}</span></td>
+        <td><span>{{ expense.income | addDevise}}</span></td>
         <td>
-            <span v-if="!editMode">{{ expense.month }}</span>
-            {{ expense }}
-        </td>
-        <td>
-            <span v-if="!editMode">{{ expense.outcome | addDevise }}</span>
-            <input 
-                id="expenseCat" 
-                type="text" 
-                name="category"
-                required
-                v-model="expense.category"
-                v-if="editMode">
-        </td>
-        <td>
-            <span v-if="!editMode">{{ expense.income | addDevise}}</span>
+            <span>{{ expense.inbank | addDevise }}</span>
             <input 
                 id="expenseAmount" 
                 type="text"
@@ -23,9 +12,6 @@
                 required
                 v-model="expense.value"
                 v-if="editMode">
-        </td>
-        <td>
-            <span>{{ expense.inbank | addDevise }}</span>
         </td>
         <td style="display: flex;">
             <button 
@@ -54,16 +40,10 @@
         data() {
             return  {
                 editMode: false,
-                edit: {
-                    name: '',
-                    category: '',
-                    date: '',
-                    value: '',
-                    type: ''
-                }
+                inbank: ''
             }
         },
-		props: ['expense'],
+		props: ['expense', 'id'],
         filters: {
             addDevise(value) {
                 return `${value}€`
@@ -74,13 +54,7 @@
                 editExpense: 'Edit_Expenses'
             }),
             editItem() {
-                this.edit = {
-                    name: this.expense.name,
-                    category: this.expense.category,
-                    date: this.expense.date,
-                    value: this.expense.value,
-                    type: this.expense.type
-                }
+                this.inbank = expense.inbank
                 this.editMode = true
             },
             saveItem() {

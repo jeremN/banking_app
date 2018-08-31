@@ -155,7 +155,7 @@ const actions = {
 	user_SignOut( {commit} ) {
 		firebase.auth().signOut()
 		commit('clearState')
-		router.push('/')
+		router.push('Index')
 	},
 	//Auto sign in
 	auto_SignIn( {commit, dispatch}, payload ) {

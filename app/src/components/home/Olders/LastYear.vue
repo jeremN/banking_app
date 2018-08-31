@@ -32,18 +32,21 @@
                         <td>Réserves</td>
                     </tr>
                 </thead>
-                <tbody>
-                    <app-item v-if="expenses.length" 
-                        v-for="item in expenseArray" 
-                        :expense="item"> 
+                <tbody v-if="expenses.length"
+                    v-for="item in expenseArray">
+                    <app-item v-for="( expense, index ) in  item.months"
+                        :expense="expense"
+                        :key="index"
+                        :id="index">
                     </app-item>
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td>{{ expenses.length }} éléments enregistrés</td>
-                        <td>{{ filters.checked }}</td>
                         <td></td>
+                        <td>{{ totalSpended | addDevise }}</td>
+                        <td>{{ totalEarned | addDevise }}</td>
                         <td></td>
+                        <td>filtre choisi: {{ filters.checked }}</td>
                     </tr>
                 </tfoot>
             </table>
@@ -70,8 +73,14 @@
                 }
             }
         },
+        filters: {
+            addDevise(value) {
+                return `${value}€`
+            }
+        },
         mounted() {
             this.filterArray
+            this.expenseArray
         },
         computed: {
             ...mapGetters({
@@ -80,12 +89,7 @@
             }),
             expenseArray() {
                 if(!this.expenses.length) return;
-                return this.expenses.filter(expense => {
-                    if(expense.year === this.filters.checked) {
-                        console.log(expense.months)
-                        return expense.months
-                    }
-                })
+                return this.filteredArray()
             },
             filterArray() {
                 if(!this.expenses.length) return;
@@ -93,12 +97,32 @@
                 return this.expenses.map( expense => {
                    return expense.year
                 })
-            }
+            },
+            totalEarned() { return parseFloat(this.getSumArray('income')).toFixed(2) },
+            totalSpended() { return parseFloat(this.getSumArray('outcome')).toFixed(2) },
+            totalInBank() {}
         },
         methods: {
             ...mapActions({
                 postPrevExpenses: 'Post_PrevExpenses'
-            })
+            }),
+            getSumArray(key) {
+                let tempArray = this.filteredArray()
+                let newArray = []
+                tempArray.filter( annual => annual.months.map( monthly => newArray.push(Number(monthly[key])) ) )
+                return this.sum(newArray)
+            },
+            sum(array) {
+                if(!array || !array.length) return;
+                return array.reduce((a, b) => a + b )
+            },
+            substract(a, b) {
+
+            },
+            filteredArray() {
+                return this.expenses.filter(expense => expense.year === this.filters.checked ? expense.months : false)
+            }
+
         },
         components: {
             appItem: Item,
@@ -116,15 +140,18 @@
     table {
         width: 100%;
 
-        tr > td { 
+        td { 
             background-color: #fff;
-            padding: 0.5em 0;
+            padding: 0.5em 0.5em;
             overflow: hidden;
             white-space: nowrap;
             text-overflow: ellipsis;
         }
         thead, tfoot {
-            tr > td { padding: 1em 0; }
+            tr > td { 
+                padding-top: 1em; 
+                padding-bottom: 1em; 
+            }
         }
     }
     thead {
