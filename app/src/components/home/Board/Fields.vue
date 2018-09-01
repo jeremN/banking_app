@@ -42,10 +42,11 @@
 			<label for="expenseAmount">Montant</label>
 			<input 
 				id="expenseAmount" 
-				type="text"
+				type="number"
+				step="0.01"
 				name="amount"
 				required
-				v-model="expense.value">
+				v-model.number="expense.value">
 		</div>
 		<div class="form-group">
 			<button 
@@ -80,7 +81,8 @@
 				return moment(this.expense.category, 'YYYY-MM-DD').format('DD/MM/YYYY')
 			},
 			newExpense() {
-				this.addExpenses(this.expense)
+				console.log(this.expense)
+				//this.addExpenses(this.expense)
 				this.expense = {
 					name: '',
 					category: '',

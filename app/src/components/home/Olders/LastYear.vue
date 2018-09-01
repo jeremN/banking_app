@@ -1,15 +1,6 @@
 <template> 
     <div class="dashboard-main">
         <app-sidebar></app-sidebar>
-        <div class="popin" v-if="popin.isActiv">
-            <h2>Avertissement</h2>
-            <p>{{ popin.message }}</p>
-            <button
-                @click.prevent=""
-                type="button">
-                Ok        
-            </button>
-        </div>
         <div class="filters">
             <div class="form-group form-group-radio" v-for="filter in filterArray">
                 <input 
@@ -56,9 +47,10 @@
 </template>
 
 <script>
-    import {mapGetters, mapActions} from 'vuex'
+    import {mapGetters} from 'vuex'
     import Item from './Item.vue'
     import Sidebar from '../Sidebar.vue'
+    import Utilities from '../../../utilities'
 
     export default {
         data() {
@@ -85,7 +77,6 @@
         computed: {
             ...mapGetters({
                 expenses: 'Return_2017',
-                popin: 'Return_Popin'
             }),
             expenseArray() {
                 if(!this.expenses.length) return;
@@ -103,18 +94,11 @@
             totalInBank() {}
         },
         methods: {
-            ...mapActions({
-                postPrevExpenses: 'Post_PrevExpenses'
-            }),
             getSumArray(key) {
                 let tempArray = this.filteredArray()
                 let newArray = []
                 tempArray.filter( annual => annual.months.map( monthly => newArray.push(Number(monthly[key])) ) )
-                return this.sum(newArray)
-            },
-            sum(array) {
-                if(!array || !array.length) return;
-                return array.reduce((a, b) => a + b )
+                return Utilities.sum(newArray)
             },
             substract(a, b) {
 

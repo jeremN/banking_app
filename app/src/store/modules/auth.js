@@ -3,22 +3,9 @@ import axios from 'axios'
 import router from '../../routes'
 import firebase from 'firebase'
 import moment from 'moment'
+import Utilities from '../../utilities'
 
-const currentDate = moment().format('DD/MMMM/YYYY')
-const currentYear = moment().format('YYYY')
-const currentMonth = moment().format('MMMM')
-
-const initialState = () => {
-	return {
-		user: null,
-		loading: false,
-		error: null
-	}
-}
-
-const state = initialState()
-
-const getTime = () => {}
+const state = Utilities.initialAuthState()
 
 const mutations = {
 	set_User( state, payload ) {
@@ -54,7 +41,7 @@ const actions = {
 					email: res.user.email,
 					name: payload.name,
 					verified: res.user.emailVerified,
-					created: currentDate
+					created: Utilities.currentDate
 				}
 				commit('set_User', newUser)
 				commit('set_Loading', false)
@@ -77,8 +64,8 @@ const actions = {
 			},
 			datas: {
 				temporary: {
-					activeMonth: currentMonth,
-					activeYear: currentYear,
+					activeMonth: Utilities.currentMonth,
+					activeYear: Utilities.currentYear,
 					currentExpenses: false
 				},
 				expenses: false,
@@ -108,16 +95,16 @@ const actions = {
 			rootState.payload.expenses = d.val().expenses
 		})
 			.then(() => {
-				rootState.payload.currentMonth = currentMonth
-				rootState.payload.currentYear = currentYear
-				if(rootState.payload.savedMonth !== currentMonth) {
+				rootState.payload.currentMonth = Utilities.currentMonth
+				rootState.payload.currentYear = Utilities.currentYear
+				if(rootState.payload.savedMonth !== Utilities.currentMonth) {
 					rootState.payload.popin = {
 						isActiv: true,
 						message: 'La sauvegarde du mois précédent va commencer',
 						type: 'month'
 					}
 				}
-				/*else if( rootState.payload.savedYear !== currentYear) {
+				/*else if( rootState.payload.savedYear !== Utilities.currentYear) {
 					rootState.payload.popin = {
 						isActiv: true,
 						message: 'La sauvegarde de l\'année précédente va commencer',

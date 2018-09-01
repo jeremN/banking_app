@@ -1,0 +1,64 @@
+<template>
+    <div class="popin" v-if="popin.isActiv">
+        <h2>Avertissement</h2>
+        <p>{{ popin.message }}</p>
+        <div>
+	        <button
+	            @click.prevent="postPrevExpenses"
+	            type="button">
+	            Ok        
+	        </button>
+	        <button
+	        	@click="closePopin"
+	        	type="button">
+	        	Fermer
+	        </button>
+        </div>
+    </div>
+</template>
+
+<script>
+	import {mapGetters, mapActions} from 'vuex'
+
+	export default {
+		computed: {
+			...mapGetters({
+				 popin: 'Return_Popin'
+			})
+		},
+		methods: {
+			...mapActions({
+                postPrevExpenses: 'Post_PrevExpenses',
+                closePopin: 'Close_Popin'
+            })
+		}
+	}
+</script>
+
+<style lang="scss" scoped>
+	.popin {
+		position: fixed;
+		background-color: #fff;
+		height: auto;
+		width: 320px;
+		padding: 15px;
+		top: calc(50% - 60px);
+		left: calc(50% - 160px);
+		display: flex;
+		flex-flow: column wrap;
+		align-items: center;
+		justify-content: center;
+		h2 {
+			margin: 1em auto;
+		}
+
+		> div {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+		button {
+			margin: 1em 1em 0;
+		}
+	}
+</style>

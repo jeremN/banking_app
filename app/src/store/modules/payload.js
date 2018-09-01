@@ -4,24 +4,10 @@ import firebase from 'firebase'
 import moment from 'moment'
 
 import * as fakeDatas from '../../fakeDatas.json'
+import Utilities from '../../utilities'
 
-const initialState = () => {
-	return {
-		items: [],
-		expenses: [],
-		savedYear: null,
-		savedMonth: null,
-		currentMonth: '',
-		currentYear: '',
-		popin:  {
-			isActiv: false,
-			message: '',
-			type: ''
-		}
-	}
-}
 const datas = JSON.stringify(fakeDatas)
-const state = initialState()
+const state = Utilities.initialPayloadState()
 
 
 const mutations = {
@@ -100,11 +86,42 @@ const actions = {
 		//commit to mutation
 		commit('Add_Expenses', expensesArray)
 	},
-	Current_Date( {commit, dispatch}, payload ) {
+	Edit_Inbank( {commit, rootState}, payload ) {
 
 	},
-	Post_PrevExpenses( {commit, state, rootState}, payload, type ) {
+	Post_PrevExpenses( {commit, dispatch, state, rootState}, payload, type ) {
+		let arr = state.items.map( item => {
+			return {
+				name: item.name,
+				value: Number(item.value),
+				category: item.category,
+				type: item.type,
+				date: item.date
+			}
+		})
+		const reducedArray = arr.reduce((item, next) => { // item stands for itemumulator
+			const lastItemIndex = item.length -1
+			const itemHasContent = item.length >= 1
 
+			if(itemHasContent && item[lastItemIndex].category == next.category) {
+				item[lastItemIndex].value += next.value
+			} else {
+			// first time seeing this entry. add it!
+			// item[lastItemIndex +1] = next;
+				if(next.type !== 'income') {
+					item[lastItemIndex +1] = { category: next.category, value: next.value }
+				}
+			}
+			return item
+		}, [])
+		console.log(reducedArray)
+	},
+	Close_Popin( {commit} ) {
+		commit('Set_Popin', {
+			isActiv: false,
+			message: '',
+			type: '' 
+		})
 	}
 }
 
