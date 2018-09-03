@@ -1,7 +1,7 @@
 <template> 
     <div class="dashboard-main">
         <app-sidebar></app-sidebar>
-        <div class="filters">
+        <div class="filters" v-if="expenses.length">
             <div class="form-group form-group-radio" v-for="filter in filterArray">
                 <input 
                         class="form-field" 

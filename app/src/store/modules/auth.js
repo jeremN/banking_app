@@ -89,6 +89,7 @@ const actions = {
 	get_UserDatas( {commit, rootState} ) {
 		let datas = firebase.database().ref(`/users/${rootState.auth.user.id}/datas/`)
 		datas.once('value', function(d) {
+			console.log(d.val().expenses)
 			rootState.payload.items = d.val().temporary.currentExpenses
 			rootState.payload.savedMonth = d.val().temporary.activeMonth
 			rootState.payload.savedYear = d.val().temporary.activeYear

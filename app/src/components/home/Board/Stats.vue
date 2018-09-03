@@ -29,7 +29,7 @@
     export default {
         filters: {
             addDevise(value) {
-                return `${value}€`
+                return parseFloat(value).toFixed(2)+'€'
             }
         },
         mounted() {

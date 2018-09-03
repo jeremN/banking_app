@@ -1,14 +1,12 @@
 import Vue from 'vue'
 import axios from 'axios'
 import firebase from 'firebase'
-import moment from 'moment'
 
 import * as fakeDatas from '../../fakeDatas.json'
 import Utilities from '../../utilities'
 
 const datas = JSON.stringify(fakeDatas)
 const state = Utilities.initialPayloadState()
-
 
 const mutations = {
 	Add_Expenses( state, payload ) {
@@ -17,7 +15,7 @@ const mutations = {
 	Set_Currents( state ) {
 	},
 	Set_Dates( state, payload ) {
-		state.curentMonth = payload.month
+		state.currentMonth = payload.month
 		state.currentYear = payload.year
 	},
 	Set_Popin( state, payload ) {
@@ -62,7 +60,7 @@ const actions = {
 		expensesArray.splice(payload, 1)
 		
 		//if array is empty then equal false
-		if(!expensesArray.length) { expensesArray = false }
+		if( !expensesArray.length ) { expensesArray = false }
 		
 		//send to database
 		firebase.database().ref(`/users/${rootState.auth.user.id}/datas/temporary/currentExpenses`).set(expensesArray)
@@ -75,7 +73,7 @@ const actions = {
 		
 		//search item, if index equal to id then replace existing item by edited one
 		expensesArray.map( (current, index) => {
-			if(index === payload.id) {
+			if( index === payload.id ) {
 				return current = payload.item
 			}
 		})
@@ -89,8 +87,17 @@ const actions = {
 	Edit_Inbank( {commit, rootState}, payload ) {
 
 	},
-	Post_PrevExpenses( {commit, dispatch, state, rootState}, payload, type ) {
-		let arr = state.items.map( item => {
+	Post_PrevExpenses( {commit, dispatch, state, rootState} ) {
+		const datas = {
+			categories: [],
+			inbank: '',
+			incomes: '',
+			outcomes: '', 
+			month: state.savedMonth
+		}
+
+		//Make all value number type (avoid string)
+		const arr = state.items.map( item => {
 			return {
 				name: item.name,
 				value: Number(item.value),
@@ -99,22 +106,54 @@ const actions = {
 				date: item.date
 			}
 		})
-		const reducedArray = arr.reduce((item, next) => { // item stands for itemumulator
-			const lastItemIndex = item.length -1
-			const itemHasContent = item.length >= 1
 
-			if(itemHasContent && item[lastItemIndex].category == next.category) {
-				item[lastItemIndex].value += next.value
-			} else {
-			// first time seeing this entry. add it!
-			// item[lastItemIndex +1] = next;
-				if(next.type !== 'income') {
-					item[lastItemIndex +1] = { category: next.category, value: next.value }
-				}
+		//Output new object with all key and values as array
+		const reduceArray = arr.reduce((item, next) => {
+			let cat = next.category 
+			let type = next.type
+			
+			if(!item[cat]) {
+				item[cat] = []
 			}
+			
+			if (!item[type]) {
+				item[type] = []
+			}
+			item[cat].push(next.value)
+			item[type].push(next.value)
+
 			return item
-		}, [])
-		console.log(reducedArray)
+		}, {})
+
+		//Push value inside tempObj, and sum all values in array for each key
+		Object.keys(reduceArray).map( key => {
+			if( key === 'income' ) {
+				datas.incomes = parseFloat(Utilities.sum(reduceArray[key]).toFixed(2))
+			}
+			else if( key === 'outcome' ) {
+				datas.outcomes = parseFloat(Utilities.sum(reduceArray[key]).toFixed(2))
+			}
+			else {
+				datas.categories.push({
+					name: key,
+					value: Utilities.sum(reduceArray[key])
+				})
+			}
+		})
+		console.log(datas)
+		console.log(state.expenses)
+		/*
+		if( !state.expenses ) {
+			state.expense = []
+			state.expense.push({
+				year: state.savedYear,
+				months: []
+			})
+		}
+		firebase.database().ref(`/users/${rootState.auth.user.id}/datas/expenses/`).set({
+			
+		})
+		*/
 	},
 	Close_Popin( {commit} ) {
 		commit('Set_Popin', {

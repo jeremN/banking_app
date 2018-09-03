@@ -82,7 +82,7 @@
 			},
 			newExpense() {
 				console.log(this.expense)
-				//this.addExpenses(this.expense)
+				this.addExpenses(this.expense)
 				this.expense = {
 					name: '',
 					category: '',
