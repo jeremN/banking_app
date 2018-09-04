@@ -19,6 +19,20 @@ const mutations = {
 			months: []
 		})
 	},
+	New_MonthExpense( state, payload ) {
+		//Push new month datas in the obj, filtered by savedYear
+		state.expenses.filter( item => {
+			if( item.year === state.savedYear ) {
+				item.months.push(payload)
+			}
+		})
+	},
+	New_Year( state ) {
+		state.expenses.push({
+			year: Utilities.currentYear(),
+			months: false
+		})
+	},
 	New_Month( state, payload ) {
 		state.savedMonth = payload.month
 	},
@@ -91,12 +105,13 @@ const actions = {
 	Edit_Inbank( {commit, rootState}, payload ) {
 
 	},
-	Post_PrevExpenses( {commit, dispatch, state, rootState} ) {
+	Prepare_MonthExpenses( {commit, state, rootState, dispatch}, isNewYear=false ) {
+
 		const datas = {
 			categories: [],
 			inbank: '',
-			incomes: '',
-			outcomes: '', 
+			income: '',
+			outcome: '', 
 			month: state.savedMonth
 		}
 
@@ -149,14 +164,16 @@ const actions = {
 		if( !state.expenses ) {
 			commit('Init_Expenses')
 		}
+		commit('New_MonthExpense', datas)
 
-		//Push new month datas in the obj, filtered by savedYear
-		state.expenses.filter( item => {
-			if( item.year === state.savedYear ) {
-				console.log(item)
-				item.months.push(datas)
-			}
-		})
+		if( isNewYear ) {
+			commit('New_Year')
+			firebase.database().ref(`/users/${rootState.auth.user.id}/datas/temporary/activeYear`).set(Utilities.currentYear())		
+		}
+
+		dispatch('Post_MonthExpenses')
+	},
+	Post_MonthExpenses( {commit, state, rootState} ) {
 		//Add datas to firebase
 		firebase.database().ref(`/users/${rootState.auth.user.id}/datas/expenses`).set(state.expenses)
 			.then( res => {

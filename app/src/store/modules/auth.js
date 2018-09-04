@@ -105,13 +105,13 @@ const actions = {
 						type: 'month'
 					}
 				}
-				/*else if( rootState.payload.savedYear !== Utilities.currentYear) {
+				else if( rootState.payload.savedYear !== rootState.payload.currentYear) {
 					rootState.payload.popin = {
 						isActiv: true,
 						message: 'La sauvegarde de l\'année précédente va commencer',
 						type: 'year'
 					}
-				}*/
+				}
 			})
 			.catch(err => console.log(err))
 	},

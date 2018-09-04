@@ -21,6 +21,10 @@ const Utilities = {
 				isActiv: false,
 				message: '',
 				type: ''
+			},
+			searches: {
+				categories: null,
+				names: null
 			}
 		}
 	},

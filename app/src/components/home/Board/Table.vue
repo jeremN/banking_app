@@ -3,8 +3,8 @@
         <table>
             <thead>
                 <tr>
-                    <td>Name</td>
-                    <td>Cat</td>
+                    <td>Nom</td>
+                    <td>Categorie</td>
                     <td>Date</td>
                     <td>Montant</td>
                     <td>Type</td>
@@ -21,7 +21,12 @@
             </tbody>
             <tfoot>
                 <tr>
-                    <td>{{ expenses.items.length }} éléments enregistrés</td>
+                    <td>
+                        <span v-if="expenses.items.length >= 1">{{ expenses.items.length }}</span> 
+                        <span v-else>0</span>
+                    éléments enregistrés</td>
+                    <td></td>
+                    <td></td>
                     <td></td>
                     <td></td>
                     <td></td>

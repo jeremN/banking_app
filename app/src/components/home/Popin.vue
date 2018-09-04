@@ -4,7 +4,7 @@
         <p>{{ popin.message }}</p>
         <div>
 	        <button
-	            @click.prevent="postPrevExpenses"
+	            @click.prevent="confirmAction(popin.type)"
 	            type="button">
 	            Ok        
 	        </button>
@@ -28,9 +28,18 @@
 		},
 		methods: {
 			...mapActions({
-              postPrevExpenses: 'Post_PrevExpenses',
+              monthExpenses: 'Prepare_MonthExpenses',
+              yearExpenses: 'Post_AnnualExpenses',
               closePopin: 'Close_Popin'
-            })
+            }),
+            confirmAction(type) {
+            	if( type === 'year' ) {
+        			this.monthExpenses(true)
+            	}
+            	else if(  type === 'month' ){
+        			this.monthExpenses()
+            	}
+            }
 		}
 	}
 </script>
