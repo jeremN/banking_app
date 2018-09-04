@@ -23,13 +23,13 @@
 	export default {
 		computed: {
 			...mapGetters({
-				 popin: 'Return_Popin'
+				popin: 'Return_Popin'
 			})
 		},
 		methods: {
 			...mapActions({
-                postPrevExpenses: 'Post_PrevExpenses',
-                closePopin: 'Close_Popin'
+              postPrevExpenses: 'Post_PrevExpenses',
+              closePopin: 'Close_Popin'
             })
 		}
 	}

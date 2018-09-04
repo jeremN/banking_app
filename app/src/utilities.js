@@ -31,6 +31,9 @@ const Utilities = {
 			error: null
 		}
 	},
+	firebaseRequest(url, data) {
+		return firebase.database().ref(url).set(data)
+	}
 	/*reducedArray(array, key1, key2, key3, val) {
 		return array.reduce( (item, next) => {
 			const lastItemIndex = item.length - 1

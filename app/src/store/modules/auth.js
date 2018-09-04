@@ -2,7 +2,6 @@ import Vue from 'vue'
 import axios from 'axios'
 import router from '../../routes'
 import firebase from 'firebase'
-import moment from 'moment'
 import Utilities from '../../utilities'
 
 const state = Utilities.initialAuthState()
@@ -89,16 +88,17 @@ const actions = {
 	get_UserDatas( {commit, rootState} ) {
 		let datas = firebase.database().ref(`/users/${rootState.auth.user.id}/datas/`)
 		datas.once('value', function(d) {
-			console.log(d.val().expenses)
 			rootState.payload.items = d.val().temporary.currentExpenses
 			rootState.payload.savedMonth = d.val().temporary.activeMonth
 			rootState.payload.savedYear = d.val().temporary.activeYear
 			rootState.payload.expenses = d.val().expenses
 		})
 			.then(() => {
-				rootState.payload.currentMonth = Utilities.currentMonth
-				rootState.payload.currentYear = Utilities.currentYear
-				if(rootState.payload.savedMonth !== Utilities.currentMonth) {
+				rootState.payload.currentMonth = Utilities.currentMonth()
+				rootState.payload.currentYear = Utilities.currentYear()
+				console.log(rootState.payload.savedMonth)
+				console.log(rootState.payload.currentMonth)
+				if( rootState.payload.savedMonth !== rootState.payload.currentMonth ) {
 					rootState.payload.popin = {
 						isActiv: true,
 						message: 'La sauvegarde du mois précédent va commencer',

@@ -12,11 +12,15 @@ const mutations = {
 	Add_Expenses( state, payload ) {
 		state.items = payload
 	},
-	Set_Currents( state ) {
+	Init_Expenses( state, payload ) {
+		state.expenses = []
+		state.expenses.push({
+			year: state.savedYear,
+			months: []
+		})
 	},
-	Set_Dates( state, payload ) {
-		state.currentMonth = payload.month
-		state.currentYear = payload.year
+	New_Month( state, payload ) {
+		state.savedMonth = payload.month
 	},
 	Set_Popin( state, payload ) {
 		state.popin = {
@@ -140,20 +144,34 @@ const actions = {
 				})
 			}
 		})
-		console.log(datas)
-		console.log(state.expenses)
-		/*
+
+		//If state.expenses is false, then commit init_expenses (create the expenses obj)
 		if( !state.expenses ) {
-			state.expense = []
-			state.expense.push({
-				year: state.savedYear,
-				months: []
-			})
+			commit('Init_Expenses')
 		}
-		firebase.database().ref(`/users/${rootState.auth.user.id}/datas/expenses/`).set({
-			
+
+		//Push new month datas in the obj, filtered by savedYear
+		state.expenses.filter( item => {
+			if( item.year === state.savedYear ) {
+				console.log(item)
+				item.months.push(datas)
+			}
 		})
-		*/
+		//Add datas to firebase
+		firebase.database().ref(`/users/${rootState.auth.user.id}/datas/expenses`).set(state.expenses)
+			.then( res => {
+				console.log('Expenses added to database')
+				commit('New_Month', Utilities.currentMonth())
+				commit('Add_Expenses', [])
+				commit('Set_Popin', {
+					isActiv: false,
+					message: '',
+					type: '' 
+				})
+				firebase.database().ref(`/users/${rootState.auth.user.id}/datas/temporary/currentExpenses`).set(false)		
+				firebase.database().ref(`/users/${rootState.auth.user.id}/datas/temporary/activeMonth`).set(Utilities.currentMonth())		
+			})
+			.catch(err => console.log(err))
 	},
 	Close_Popin( {commit} ) {
 		commit('Set_Popin', {
