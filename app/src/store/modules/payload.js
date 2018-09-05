@@ -46,7 +46,7 @@ const mutations = {
 }
 
 const actions = {
-	/*Post_FakeDatas( {commit, rootState}, field ) {
+	Post_FakeDatas( {commit, rootState}, field ) {
 		firebase.database().ref(`/users/${rootState.auth.user.id}/datas/`).set({
 			expenses: fakeDatas.expenses,
 			temporary: fakeDatas.temporary,
@@ -57,7 +57,7 @@ const actions = {
 		})
 		.then(res => console.log(res))
 		.catch(err => console.log(res))
-	},*/
+	},
 	Post_Expenses( {commit, state, rootState}, payload ) {
 		//if state.item false then it's an empty array, else if equal state.item
 		let expensesArray = !state.items ? [] : state.items

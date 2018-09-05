@@ -35,6 +35,9 @@ const Utilities = {
 			error: null
 		}
 	},
+	localDateFr(date, format) {
+		return moment(date).locale('fr').format(format)
+	},
 	firebaseRequest(url, data) {
 		return firebase.database().ref(url).set(data)
 	}

@@ -1,6 +1,6 @@
 <template>
     <tr :id="id">
-        <td><span>{{ expense.month }}</span></td>
+        <td><span>{{ expense.month | localDateFr}}</span></td>
         <td><span>{{ expense.outcome | addDevise }}</span></td>
         <td><span>{{ expense.income | addDevise}}</span></td>
         <td>
@@ -47,6 +47,9 @@
         filters: {
             addDevise(value) {
                 return `${value}€`
+            },
+            localDateFr(date) {
+                return moment(date, 'MMMM').locale('fr').format('MMMM')
             }
         },
         methods: {

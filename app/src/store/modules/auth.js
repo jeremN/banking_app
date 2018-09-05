@@ -96,8 +96,6 @@ const actions = {
 			.then(() => {
 				rootState.payload.currentMonth = Utilities.currentMonth()
 				rootState.payload.currentYear = Utilities.currentYear()
-				console.log(rootState.payload.savedMonth)
-				console.log(rootState.payload.currentMonth)
 				if( rootState.payload.savedMonth !== rootState.payload.currentMonth ) {
 					rootState.payload.popin = {
 						isActiv: true,

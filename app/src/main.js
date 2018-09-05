@@ -10,6 +10,7 @@ Vue.use(Vuelidate)
 
 
 const firebaseConfig = {
+
 }
 
 
