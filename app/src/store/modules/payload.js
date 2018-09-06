@@ -131,11 +131,11 @@ const actions = {
 			let cat = next.category 
 			let type = next.type
 			
-			if(!item[cat]) {
+			if( !item[cat] ) {
 				item[cat] = []
 			}
 			
-			if (!item[type]) {
+			if( !item[type] ) {
 				item[type] = []
 			}
 			item[cat].push(next.value)
