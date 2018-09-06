@@ -63,26 +63,13 @@
                     </tr>
                 </tfoot>
             </table>
-            <table v-else>
-                <thead>
-                    <tr>
-                        <td v-for="text in tableHead">{{ text }}</td>
-                    </tr>
-                </thead>
-                <tbody v-if="expenses.length"
-                v-for="item in expenseArray">
-                    <app-item-bis v-for="( arr, index ) in item"
-                        :categories="arr"
-                        :key="index"
-                        :id="index"
-                    >
-                    </app-item-bis>
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td v-for="i in 13"></td>
-                    </tr>
-                </tfoot>
+            <table v-else v-for="(item, index) in expenseArray">
+                <app-item-bis
+                    :categories="item.months"
+                    :key="index"
+                    :id="index"
+                >
+                </app-item-bis>
             </table>
         </div>           
     </div>

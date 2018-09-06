@@ -1,8 +1,21 @@
 <template>
     <div>
-        <tr :id="id" v-for="(cat, i) in categories">
-        </tr>
-        <span>{{ category }}</span>
+        <thead>
+            <tr>
+                <td v-for="month in months">{{ month }}</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr :id="id" v-for="(cat, key, index) in renderCat">
+                <td>{{ cat }}{{key}}{{index}}</td>
+                <td v-for="item in cat">{{ item.value }}</td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td></td>
+            </tr>
+        </tfoot>
     </div>
 </template>
 
@@ -14,7 +27,8 @@
         data() {
             return  {
                 editMode: false,
-                inbank: ''
+                inbank: '',
+                months: [],
             }
         },
 		props: ['categories', 'id'],
@@ -27,47 +41,42 @@
             }
         },
         computed: {
-            category() {
-                const a = this.categories.map( item => {
-                    console.log(item)
-                    let b = this.mappedArray(item.categories)
-                    console.log(b)
-                })
-                /*
-                const a = this.categories.reduce( (item, next) => {
-                    console.log('next', next.categories)
-                    console.log('item', item)
-                    let temp = this.mappedArray(next.categories)
-                    let month = next.month
-                    let cat = temp.name
-                    console.log(cat, month, temp.val)
-                    //console.log('temps is:', temp)
-                    //console.log('item is:', item)
-                    //console.log('next is:', next)
-
-                    if( !item[cat] ) {
-                        item[cat] = []
-                    }
-
-                    item[cat].push({month: month, value: temp.val})
-                    return item
-                }, {})
+            renderCat() {
+                console.log(this.catObject())
+                const a = Object.keys(this.catObject()).map( key => this.catObject()[key] )
                 console.log(a)
-                */
+                return a
             }
-		},
+        },
         methods: {
-            mappedArray(array) {
-                let c
-                array.map( item => {
+            catObject() {
+                const arr = this.categories.map( item => {
                     return {
-                        
+                        categories: item.categories,
+                        month: item.month
                     }
-                })
+                })  
+                return arr.reduce( (item, next) => {
+                    let cat = ''
+                    let value = ''
+                    
+                    for( let key in next.categories ) {
+                        cat = next.categories[key].name
+                        value = next.categories[key].value
 
+                        if( !item[cat] ) {
+                            item[cat] = []
+                        }
+                        item[cat].push({
+                            month: next.month,
+                            value: value
+                        })
+                    }
+                    return item
+                }, {})       
             }
-        }
-	}
+        }	
+    }
 	
 </script>
 
