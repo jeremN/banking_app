@@ -1,18 +1,17 @@
 import Vue from 'vue'
 import App from './App.vue'
 import axios from 'axios'
-import router from './routes'
-import store from './store/store'
-import Vuelidate from 'vuelidate'
-import firebase from 'firebase'
+import router       from './routes'
+import store        from './store/store'
+import Vuelidate    from 'vuelidate'
+import firebase     from 'firebase'
+import './filters'
 
 Vue.use(Vuelidate)
-
 
 const firebaseConfig = {
 
 }
-
 
 new Vue({
   el: '#app',

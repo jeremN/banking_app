@@ -59,7 +59,7 @@
 
 <script>
 	import {mapActions} from 'vuex'
-	import moment from 'moment'
+	import moment 			from 'moment'
 
 	export default {
 		data() {
@@ -67,7 +67,7 @@
 				expense: {
 					name: '',
 					category: '',
-					date: '',
+					date: moment().format('YYYY-MM-DD'),
 					type: '',
 					value: ''
 				}
@@ -81,12 +81,11 @@
 				return moment(this.expense.category, 'YYYY-MM-DD').format('DD/MM/YYYY')
 			},
 			newExpense() {
-				console.log(this.expense)
 				this.addExpenses(this.expense)
 				this.expense = {
 					name: '',
 					category: '',
-					date: '',
+					date: moment().format('YYYY-MM-DD'),
 					type: '',
 					value: ''
 				}

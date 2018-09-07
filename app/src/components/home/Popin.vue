@@ -34,10 +34,13 @@
             }),
             confirmAction(type) {
             	if( type === 'year' ) {
-        			this.monthExpenses(true)
+        				this.monthExpenses(true)
             	}
             	else if(  type === 'month' ){
-        			this.monthExpenses()
+        				this.monthExpenses()
+            	}
+            	else if( type === 'email' || type === 'verif') {
+            		this.closePopin()
             	}
             }
 		}

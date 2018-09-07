@@ -1,10 +1,10 @@
 <template>
     <tr :id="id">
-        <td><span>{{ expense.month | localDateFr}}</span></td>
-        <td><span>{{ expense.outcome | addDevise }}</span></td>
-        <td><span>{{ expense.income | addDevise}}</span></td>
+        <td><span>{{ expense.month | monthFr }}</span></td>
+        <td><span>{{ expense.outcome | devise }}</span></td>
+        <td><span>{{ expense.income | devise }}</span></td>
         <td>
-            <span>{{ expense.inbank | addDevise }}</span>
+            <span>{{ expense.inbank | devise }}</span>
             <input 
                 id="expenseAmount" 
                 type="text"
@@ -44,14 +44,6 @@
             }
         },
 		props: ['expense', 'id'],
-        filters: {
-            addDevise(value) {
-                return `${value}€`
-            },
-            localDateFr(date) {
-                return moment(date, 'MMMM').locale('fr').format('MMMM')
-            }
-        },
         methods: {
             ...mapActions({
                 editExpense: 'Edit_Expenses'

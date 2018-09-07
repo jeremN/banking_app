@@ -3,14 +3,14 @@
         <div class="stats-group">
             <p>
                 revenus 
-                <span v-if="earning">{{ earning | addParsedDevise }}</span>
+                <span v-if="earning">{{ earning | parsedDevise }}</span>
                 <span v-else>0€</span>
             </p>
         </div>
         <div class="stats-group">
             <p>
                 dépenses 
-                <span v-if="spending">{{ spending | addParsedDevise }} / {{ compare }}</span>
+                <span v-if="spending">{{ spending | parsedDevise }} / {{ compare }}</span>
                 <span v-else>0€</span>
             </p>
         </div>
@@ -18,25 +18,20 @@
             <p>month<span>-22%</span></p>
         </div>
         <div class="stats-group">
-            <p>last-month <span>{{ lastMonthExpense | addParsedDevise }}</span></p>
+            <p>last-month <span>{{ lastMonthExpense | parsedDevise }}</span></p>
         </div>
     </div>
 </template>
 
 <script>
     import {mapGetters} from 'vuex'
-    import Utilities from '../../../Utilities'
-    import moment from 'moment'
+    import Utilities    from '../../../Utilities'
+    import moment       from 'moment'
 
     export default {
         data() {
             return {
                 lastMonthExpense: ''
-            }
-        },
-        filters: {
-            addParsedDevise(value) {
-                return parseFloat(value).toFixed(2)+'€'
             }
         },
         mounted() {

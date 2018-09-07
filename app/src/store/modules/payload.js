@@ -1,9 +1,9 @@
-import Vue from 'vue'
-import axios from 'axios'
-import firebase from 'firebase'
+import Vue 						from 'vue'
+import axios 					from 'axios'
+import firebase 			from 'firebase'
 
 import * as fakeDatas from '../../fakeDatas.json'
-import Utilities from '../../utilities'
+import Utilities 			from '../../utilities'
 
 const datas = JSON.stringify(fakeDatas)
 const state = Utilities.initialPayloadState()

@@ -56,20 +56,17 @@
                 <tfoot>
                     <tr>
                         <td></td>
-                        <td>{{ totalSpended | addDevise }}</td>
-                        <td>{{ totalEarned | addDevise }}</td>
+                        <td>{{ totalSpended | devise }}</td>
+                        <td>{{ totalEarned | devise }}</td>
                         <td></td>
                         <td>filtre choisi: {{ filters.checked }}</td>
                     </tr>
                 </tfoot>
             </table>
-            <table v-else v-for="(item, index) in expenseArray">
-                <app-item-bis
-                    :categories="item.months"
-                    :key="index"
-                    :id="index"
-                >
-                </app-item-bis>
+            <table 
+                v-else 
+                v-for="(item, key, index) in expenseArray">
+                <app-item-bis :categories="item.months"></app-item-bis>
             </table>
         </div>           
     </div>
@@ -78,10 +75,10 @@
 
 <script>
     import {mapGetters} from 'vuex'
-    import Item from './Item.vue'
-    import ItemBis from './Itembis.vue'
-    import Sidebar from '../Sidebar.vue'
-    import Utilities from '../../../utilities'
+    import Item         from './Item.vue'
+    import ItemBis      from './Itembis.vue'
+    import Sidebar      from '../Sidebar.vue'
+    import Utilities    from '../../../utilities'
 
     export default {
         data() {
@@ -110,11 +107,6 @@
                     'Novembre',
                     'Décembre',
                 ]
-            }
-        },
-        filters: {
-            addDevise(value) {
-                return `${value}€`
             }
         },
         mounted() {

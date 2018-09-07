@@ -1,14 +1,15 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
+import Vue 				from 'vue'
+import VueRouter 	from 'vue-router'
 
-import store from './store/store'
+import store 			from './store/store'
 
-import Home from './components/home/Home.vue'
-import Main from './components/home/Main.vue'
-import Signup from './components/login/Signup.vue'
-import Signin from './components/login/Signin.vue'
-import Notfound from './components/home/Notfound.vue'
-import LastYear from './components/home/Olders/LastYear.vue'
+import Home 			from './components/home/Home.vue'
+import Main 			from './components/home/Main.vue'
+import Signup 		from './components/login/Signup.vue'
+import Signin 		from './components/login/Signin.vue'
+import Notfound 	from './components/home/Notfound.vue'
+import LastYear 	from './components/home/Olders/LastYear.vue'
+import Profile 		from './components/profile/Profile.vue'
 
 Vue.use(VueRouter)
 
@@ -39,7 +40,18 @@ const routes = [
 	{
 		path: '/LastYear',
 		name: 'Lastyear',
-		component: LastYear
+		component: LastYear,
+		beforeEnter(to, from, next) {
+			store.state.user !== null && from.path !== '/LastYear' ? next() : next('/')
+		}
+	},
+	{
+		path: '/Profile',
+		name: 'Profile',
+		component: Profile,
+		beforeEnter(to, from, next) {
+			store.state.user !== null && from.path !== '/Profile' ? next() : next('/')
+		}
 	},
 	{
 		path: '*',

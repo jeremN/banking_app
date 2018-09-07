@@ -1,0 +1,43 @@
+###
+TODO
+###
+
+#User profile
+	#User can change password -> [Partially implemented]
+	#User can change email -> [OK]
+	#User can change name -> [OK]
+	#User can demand email verification -> [Need test and configure firebase]
+	#User can delete account -> [Partially implemented]
+
+#Email confirmation
+	#Send email to confirm account -> [Partially implemented]
+
+#Add inbank Edit
+
+#Show expenses by cat (by year choice) -> [OK]
+
+#Footer chart
+	#Bar chart of current year earning & spending
+
+#Stats
+	#Find which chart to display
+
+#Add expense
+	#Make date input show the current date -> [OK]
+	#Make category input suggestion while typing
+	#Make name input suggestion while typing 
+
+#App
+	#Make a design
+	#Review/Rework components
+	#Add responsive
+	#Add animation
+	#Add transition
+	#Turn into PWA
+	#(BONUS) Scan receipt and recognize numbers
+	#Handle errors & loading states
+
+#PWA
+	#Cache data
+	#Manifest
+	#See what can be implemented

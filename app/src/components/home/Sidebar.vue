@@ -14,7 +14,7 @@
                 <!--a class="navbar-link" href="#"><i class="fas fa-list-ul"></i><span>Annuel</span></a-->
             </li>
             <li>
-                <router-link to="/Profil" class="navbar-link">
+                <router-link to="/Profile" class="navbar-link">
                     <i class="fas fa-user"></i><span>Profil</span>
                 </router-link>
                 <!--a class="navbar-link" href="#"><i class="fas fa-user"></i><span>Profil</span></a-->

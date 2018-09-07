@@ -32,7 +32,8 @@ const Utilities = {
 		return {
 			user: null,
 			loading: false,
-			error: null
+			error: null,
+			userRequest: null
 		}
 	},
 	localDateFr(date, format) {

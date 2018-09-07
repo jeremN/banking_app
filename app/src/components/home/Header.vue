@@ -4,8 +4,8 @@
         <ul v-if="isAuth">
             <li class="header-link header-link-user">
                 <img src="#" alt="">
-                <span class="link-username">{{ userInfos.name }}</span>
-                <span class="link-date">Dernière connexion: {{ time }}</span>
+                <span class="link-username">{{ user.name }}</span>
+                <span class="link-date">Dernière connexion: {{ currentTime }}</span>
                 <button type="button" @click="logOut">Logout</button>
             </li>
         </ul>
@@ -29,18 +29,18 @@
 
 <script>
     import {mapActions, mapGetters} from 'vuex'
+    import moment                   from 'moment'
 
 	export default {
 		data() {
 			return {
-				username: 'Jerem',
-                time: '24/06/2018'
+                currentTime: moment().format('DD/MM/YYYY')
 			}
 		},
         computed: {
             ...mapGetters({
                 isAuth: 'isAuthenticated',
-                userInfos: 'user'
+                user: 'user'
             })
         },
         methods: {

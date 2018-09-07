@@ -30,7 +30,7 @@
                 v-if="editMode">
         </td>
         <td>
-            <span v-if="!editMode">{{ expense.value | addDevise}}</span>
+            <span v-if="!editMode">{{ expense.value | devise}}</span>
             <input 
                 id="expenseAmount" 
                 type="text"
@@ -76,7 +76,7 @@
 
 <script>
     import {mapActions} from 'vuex'
-    import moment from 'moment'
+    import moment       from 'moment'
 
 	export default {
         data() {
@@ -93,15 +93,6 @@
         },
 		props: ['expense', 'id'],
         filters: {
-            addDevise(value) {
-                return `${value}€`
-            },
-            formatDate(value) {
-                return moment(value, 'YYYY-MM-DD').format('DD/MM/YYYY')
-            },
-            translateType(string) {
-                return string === 'outcome' ? 'Dépense' : 'Revenu'
-            }
         },
         methods: {
             ...mapActions({

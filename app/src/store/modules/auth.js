@@ -1,17 +1,22 @@
-import Vue from 'vue'
-import axios from 'axios'
-import router from '../../routes'
-import firebase from 'firebase'
-import Utilities from '../../utilities'
+import Vue 				from 'vue'
+import axios 			from 'axios'
+import router 		from '../../routes'
+import firebase 	from 'firebase'
+import Utilities 	from '../../utilities'
+import moment			from 'moment'
 
 const state = Utilities.initialAuthState()
 
 const mutations = {
 	set_User( state, payload ) {
-		state.user = Object.assign({}, payload)
+		state.user = state.user === null ? Object.assign({}, payload) : Object.assign({}, state.user, payload)
+		state.userRequest = firebase.auth().currentUser
+	},
+	update_User( state, {payload, key}) {
+		state[key] = payload
 	},
 	clearState( state ) {
-		state = initialState()
+		state = Utilities.initialAuthState()
 	},
 	set_Loading( state, bool ) {
 		state.loading = bool
@@ -40,7 +45,7 @@ const actions = {
 					email: res.user.email,
 					name: payload.name,
 					verified: res.user.emailVerified,
-					created: Utilities.currentDate
+					created: Utilities.currentDate()
 				}
 				commit('set_User', newUser)
 				commit('set_Loading', false)
@@ -63,8 +68,8 @@ const actions = {
 			},
 			datas: {
 				temporary: {
-					activeMonth: Utilities.currentMonth,
-					activeYear: Utilities.currentYear,
+					activeMonth: Utilities.currentMonth() ,
+					activeYear: Utilities.currentYear(),
 					currentExpenses: false
 				},
 				expenses: false,
@@ -73,7 +78,8 @@ const actions = {
 					names: false
 				}
 			}
-		})
+		}).then( res => console.log(res))
+		.catch(err => console.log(err))
 	},
 	//Get saved user profile
 	get_UserProfile( {commit, dispatch, rootState} ) {
@@ -83,9 +89,11 @@ const actions = {
 				commit('set_User', payload.val()) 
 				dispatch('get_UserDatas')
 			})
+			.catch(err => console.log(err))
 	},
 	//Get saved user datas
 	get_UserDatas( {commit, rootState} ) {
+		commit('set_Loading', true)
 		let datas = firebase.database().ref(`/users/${rootState.auth.user.id}/datas/`)
 		datas.once('value', function(d) {
 			rootState.payload.items = d.val().temporary.currentExpenses
@@ -103,13 +111,15 @@ const actions = {
 						type: 'month'
 					}
 				}
-				else if( rootState.payload.savedYear !== rootState.payload.currentYear) {
+				else if( rootState.payload.savedYear !== rootState.payload.currentYear 
+					&& rootState.payload.savedMonth !== rootState.payload.currentMonth) {
 					rootState.payload.popin = {
 						isActiv: true,
 						message: 'La sauvegarde de l\'année précédente va commencer',
 						type: 'year'
 					}
 				}
+				commit('set_Loading', false)
 			})
 			.catch(err => console.log(err))
 	},
@@ -151,18 +161,98 @@ const actions = {
 		}
 		commit('set_User', user)
 		dispatch('get_UserProfile')
+	},
+	//Update Name
+	update_UserName( {commit}, payload ) {
+		firebase.database().ref('/users/'+state.user.id+'/profile/name').set(payload).then( res => {
+			console.log(res)
+			commit('update_User', payload, 'name')
+		})
+	},
+	send_UserEmailVerification( {commit, state, rootState} ) {
+		let credential = [state.user.email, payload.oldPassword]
+		const callback = firebase.auth().currentUser.sendEmailVerification().then( res => {
+			if( res.success ) {
+				rootState.payload.popin = {
+					isActiv: true,
+					message: 'L\'email est parti, pensez à regarder dans votre messagerie',
+					type: 'verif'
+				}
+			}
+		})
+		.catch( err => {
+			rootState.payload.popin = {
+				isActiv: true,
+				message: 'L\'envoi de l\'email a échoué, veuillez réessayer plus tard',
+				type: 'verif'
+			}
+		})
+		dispatch('user_ReAuthenticate', credential, callback)
+	},
+	//Update email
+	update_UserEmail( {commit, dispatch, state, rootState}, payload ) {
+		console.log(payload)
+		const credentials = firebase.auth.EmailAuthProvider.credential(state.user.email, payload.oldPassword)
+		const callback = firebase.auth().currentUser.updateEmail(payload.email).then( (res) => {
+			console.log(res)
+			rootState.payload.popin = {
+				isActiv: true,
+				message: 'L\'adresse email a été changé avec succès',
+				type: 'email'
+			}
+			commit('update_User', payload.email, 'email')
+		})
+		.catch( err => {
+			rootState.payload.popin = {
+				isActiv: true,
+				message: 'Le changement d\'adresse email a échoué, veuillez réessayer',
+				type: 'email'
+			}
+			console.log(err)
+		})
+		dispatch('user_ReAuthenticate', credentials, callback)
+	},
+	//Change password
+	change_UserPassword( {commit, state, dispatch, rootState}, payload ) {
+		let credential = [state.user.email, payload.oldPassword]
+		const callback = state.userRequest.updatePassword(payload.newPassword).then( res => {
+			if( res.success ) {
+				rootState.payload.popin = {
+					isActiv: true,
+					message: 'Le mot de passe a été changé avec succès',
+					type: 'Password'
+				}
+			}
+		})
+		.catch( err => {
+			rootState.payload.popin = {
+				isActiv: true,
+				message: 'Le changement de mot de passe a échoué, veuillez réessayer',
+				type: 'Password'
+			}
+		})
+		dispatch('user_ReAuthenticate', credential, callback)
+	},
+	//Re auth user
+	user_ReAuthenticate( {commit}, credential, fn ) {
+		state.userRequest.reauthenticateAndRetrieveDataWithCredential(credential)
+			.then(fn)
+			.catch(err => console.log(err));
 	}
 }
 
 const getters = {
-	user( state ) {
+	user( state, getters ) {
 		return state.user
 	},
-	isAuthenticated( state ) {
+	isAuthenticated( state, getters ) {
 		return state.user !== null
 	},
-	hasError( state ) {
+	hasError( state, getters ) {
 		return state.error !== null
+	},
+	isLoading( state, getters ) {
+		return state.loading
 	}
 }
 
