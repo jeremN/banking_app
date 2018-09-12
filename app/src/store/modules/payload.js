@@ -206,7 +206,7 @@ const getters = {
 	Return_State( state, getters ) {
 		return state
 	},
-	Return_2017( state, getters ) {
+	Return_allExpenses( state, getters ) {
 		return state.expenses
 	},
 	Return_Popin( state, getters ) {

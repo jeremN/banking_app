@@ -6,10 +6,10 @@
                 <img src="#" alt="">
                 <span class="link-username">{{ user.name }}</span>
                 <span class="link-date">Dernière connexion: {{ currentTime }}</span>
-                <button type="button" @click="logOut">Logout</button>
+                <button type="button" @click.prevent="logOut">Logout</button>
             </li>
         </ul>
-        <ul v-else>
+        <ul v-if="!isAuth">
             <li>
                 <router-link 
                     to="Signin">

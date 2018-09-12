@@ -11,7 +11,7 @@ Vue.use(Vuelidate)
 
 const firebaseConfig = {
 
-}
+  }
 
 new Vue({
   el: '#app',

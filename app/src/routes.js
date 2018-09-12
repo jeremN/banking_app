@@ -1,15 +1,15 @@
 import Vue 				from 'vue'
-import VueRouter 	from 'vue-router'
+import VueRouter 		from 'vue-router'
 
 import store 			from './store/store'
 
 import Home 			from './components/home/Home.vue'
 import Main 			from './components/home/Main.vue'
-import Signup 		from './components/login/Signup.vue'
-import Signin 		from './components/login/Signin.vue'
-import Notfound 	from './components/home/Notfound.vue'
-import LastYear 	from './components/home/Olders/LastYear.vue'
-import Profile 		from './components/profile/Profile.vue'
+import Signup 			from './components/login/Signup.vue'
+import Signin 			from './components/login/Signin.vue'
+import Notfound 		from './components/home/Notfound.vue'
+import LastYear 		from './components/home/Olders/LastYear.vue'
+import Profile 			from './components/profile/Profile.vue'
 
 Vue.use(VueRouter)
 

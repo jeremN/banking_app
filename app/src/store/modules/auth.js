@@ -1,8 +1,8 @@
 import Vue 				from 'vue'
 import axios 			from 'axios'
-import router 		from '../../routes'
-import firebase 	from 'firebase'
-import Utilities 	from '../../utilities'
+import router 			from '../../routes'
+import firebase 		from 'firebase'
+import Utilities 		from '../../utilities'
 import moment			from 'moment'
 
 const state = Utilities.initialAuthState()
@@ -149,9 +149,11 @@ const actions = {
 	},
 	//Sign out
 	user_SignOut( {commit} ) {
-		firebase.auth().signOut()
-		commit('clearState')
-		router.push('Index')
+		firebase.auth().signOut().then( () => {
+			commit('clearState')
+			router.push('/')
+		})
+		.catch( err => console.log(err))
 	},
 	//Auto sign in
 	auto_SignIn( {commit, dispatch}, payload ) {
@@ -194,7 +196,6 @@ const actions = {
 		console.log(payload)
 		const credentials = firebase.auth.EmailAuthProvider.credential(state.user.email, payload.oldPassword)
 		const callback = firebase.auth().currentUser.updateEmail(payload.email).then( (res) => {
-			console.log(res)
 			rootState.payload.popin = {
 				isActiv: true,
 				message: 'L\'adresse email a été changé avec succès',
@@ -214,24 +215,41 @@ const actions = {
 	},
 	//Change password
 	change_UserPassword( {commit, state, dispatch, rootState}, payload ) {
-		let credential = [state.user.email, payload.oldPassword]
-		const callback = state.userRequest.updatePassword(payload.newPassword).then( res => {
-			if( res.success ) {
-				rootState.payload.popin = {
-					isActiv: true,
-					message: 'Le mot de passe a été changé avec succès',
-					type: 'Password'
-				}
+		const credentials = firebase.auth.EmailAuthProvider.credential(state.user.email, payload.oldPassword)
+		const callback = firebase.auth().currentUser.updatePassword(payload.newPassword).then( res => {
+			rootState.payload.popin = {
+				isActiv: true,
+				message: 'Le mot de passe a été changé avec succès',
+				type: 'password'
 			}
 		})
 		.catch( err => {
 			rootState.payload.popin = {
 				isActiv: true,
 				message: 'Le changement de mot de passe a échoué, veuillez réessayer',
-				type: 'Password'
+				type: 'password'
 			}
 		})
-		dispatch('user_ReAuthenticate', credential, callback)
+		dispatch('user_ReAuthenticate', credentials, callback)
+	},
+	delete_Account( {commit, state, dispatch, rootState}, payload ) {
+		const credentials = firebase.auth.EmailAuthProvider.credential(state.user.email, payload.oldPassword)
+		const callback = firebase.auth().currentUser.delete().then( () => {
+			rootState.payload.popin = {
+				isActiv: true,
+				message: 'Votre compte a été effacer, vous allez être déconnecter',
+				type: 'account'
+			}
+			dispatch('user_SignOut')
+		})
+		.catch( err => {
+			rootState.payload.popin = {
+				isActiv: true,
+				message: 'L\'effacement a échouer, veuillez réessayer',
+				type: 'account'
+			}
+		})
+		dispatch('user_ReAuthenticate', credentials, callback)
 	},
 	//Re auth user
 	user_ReAuthenticate( {commit}, credential, fn ) {

@@ -103,7 +103,8 @@
 					changeName: 'update_UserName',
 					changeEmail: 'update_UserEmail',
 					changePassword: 'change_UserPassword',
-					sendVerif: 'send_UserEmailVerification'
+					sendVerif: 'send_UserEmailVerification',
+					deleteUser: 'delete_Account'
 			}),
 			resetFields() {
 				this.user.name = ''
@@ -115,22 +116,30 @@
 			},
 			changeUserName() {
 				this.changeName(this.user.name)
+				this.resetFields()
 			},
 			changeUserEmail() {
 				this.changeEmail({
 					oldPassword: this.user.oldPassword,
 					email: this.user.email,
 				})
-				console.log('Changing email...')
+				this.resetFields()
 			},
 			changeUserPassword() {
-				console.log('Changing password...')
+				this.changePassword({
+					oldPassword: this.user.oldPassword,
+					newPassword: this.user.newPassword
+				})
+				this.resetFields()
 			},
 			sendEmailVerification() {
 				console.log('Sending email...')
 			},
 			deleteAccount() {
-				console.log('Delete account...')
+				this.deleteUser({
+					oldPassword: this.user.oldPassword
+				})
+				this.resetFields()
 			}
 		},
 		components: {

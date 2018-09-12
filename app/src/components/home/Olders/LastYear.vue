@@ -115,7 +115,7 @@
         },
         computed: {
             ...mapGetters({
-                expenses: 'Return_2017',
+                expenses: 'Return_allExpenses',
             }),
             expenseArray() {
                 if(!this.expenses.length) return;

@@ -39,7 +39,10 @@
             	else if(  type === 'month' ){
         				this.monthExpenses()
             	}
-            	else if( type === 'email' || type === 'verif') {
+            	else if( type === 'email' 
+            		|| type === 'verif' 
+            		|| type === 'password'
+            		|| type === 'account' ) {
             		this.closePopin()
             	}
             }

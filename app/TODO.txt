@@ -3,11 +3,12 @@ TODO
 ###
 
 #User profile
-	#User can change password -> [Partially implemented]
+	#User can change password -> [OK]
 	#User can change email -> [OK]
 	#User can change name -> [OK]
 	#User can demand email verification -> [Need test and configure firebase]
-	#User can delete account -> [Partially implemented]
+	#User can delete account -> [OK]
+	!!See errors returned by firebase once the request is done (even if it success)
 
 #Email confirmation
 	#Send email to confirm account -> [Partially implemented]
@@ -36,6 +37,7 @@ TODO
 	#Turn into PWA
 	#(BONUS) Scan receipt and recognize numbers
 	#Handle errors & loading states
+	!!See problem on log-out (header component don't refresh)
 
 #PWA
 	#Cache data
