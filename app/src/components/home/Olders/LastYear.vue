@@ -50,7 +50,8 @@
                     <app-item v-for="( expense, index ) in item.months"
                         :expense="expense"
                         :key="index"
-                        :id="index">
+                        :id="index"
+                        :year="filters.checked">
                     </app-item>
                 </tbody>
                 <tfoot>
@@ -90,8 +91,9 @@
                 },
                 filters: {
                     checked: '',
-                    type: 'cats'
+                    type: 'year'
                 },
+                edit: false,
                 tableHead: [
                     'Catégorie',
                     'Janvier',
@@ -143,7 +145,6 @@
             filteredArray() {
                 return this.expenses.filter(expense => expense.year === this.filters.checked ? expense.months : false)
             }
-
         },
         components: {
             appItem: Item,

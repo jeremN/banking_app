@@ -3,31 +3,38 @@
         <td><span>{{ expense.month | monthFr }}</span></td>
         <td><span>{{ expense.outcome | devise }}</span></td>
         <td><span>{{ expense.income | devise }}</span></td>
-        <td>
+        <td style="display: flex;">
             <span>{{ expense.inbank | devise }}</span>
+            <button 
+                class="list-item btn btn-edit"
+                @click.prevent="editItem"
+                v-if="!edit">
+                Edit
+                <i class="fas fa-edit"></i>
+            </button>
+            <button 
+                class="list-item btn btn-edit"
+                @click.prevent="saveItem"
+                v-if="edit">
+                Save
+                <i class="fas fa-edit"></i>
+            </button>
+            <button 
+            	class="list-item btn btn-edit"
+            	@click.prevent="editItem"
+                v-if="edit">
+                Close
+                <i class="fas fa-times"></i>
+            </button>
             <input 
                 id="expenseAmount" 
                 type="text"
                 name="amount"
                 required
-                v-model="expense.value"
-                v-if="editMode">
+                v-model="inbank"
+                v-if="edit">
         </td>
-        <td style="display: flex;">
-            <button 
-                class="list-item btn btn-edit"
-                @click.prevent="editItem"
-                v-if="!editMode">
-                Edit
-                <i class="fas fa-edit"></i>
-            </button>
-            <button 
-            	class="list-item btn btn-edit"
-            	@click.prevent="saveItem"
-                v-if="editMode">
-                Save
-                <i class="fas fa-edit"></i>
-            </button>
+        <td>
         </td>
     </tr>
 </template>
@@ -37,33 +44,27 @@
     import moment from 'moment'
 
 	export default {
+        props: ['expense', 'id', 'year'],
         data() {
             return  {
-                editMode: false,
-                inbank: ''
+                edit: false,
+                inbank: !this.expense.inbank ? '' : this.expense.inbank
             }
         },
-		props: ['expense', 'id'],
         methods: {
             ...mapActions({
-                editExpense: 'Edit_Expenses'
+                editInBank: 'Edit_Inbank'
             }),
             editItem() {
-                this.inbank = expense.inbank
-                this.editMode = true
+                this.edit = this.edit === false ? true : false
             },
             saveItem() {
-                const item = this.edit
-                const id = this.id
-                this.editExpense({id, item})
-                this.editMode = false
-                this.edit = {
-                    name: '',
-                    category: '',
-                    date: '',
-                    value: '',
-                    type: ''
-                }
+                const selectedYear = this.year
+                const month = this.expense.month
+                const val = this.inbank
+                this.editInBank({month, selectedYear, val})
+                this.editItem()
+                this.inbank = ''
             },
             itemType(type) {
                 return type === 'outcome' ? 'Dépense' : 'Revenu'

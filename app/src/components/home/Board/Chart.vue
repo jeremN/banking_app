@@ -1,78 +1,103 @@
 <template>
 	<div class="card card-chart">
 		<div class="card-heading">
-			<h2 v-if="this.datas">
+			<h2 v-if="expenses.length">
 				<span class="color-blue"></span> Dépenses de l'année 2018
+				<br>
+				<span style="color: #3498db;">Gain : {{ sum.earn | parsedDevise }}</span>
+				<br>
+				<span style="color:#e74c3c;">Dépense : {{ sum.spend | parsedDevise }}</span>
 			</h2>
 			<h2 v-else>No data to show</h2>
 		</div>
 		<div class="card-body">
-			<svg 
-				id="barChart" 
-				:style="{ width: settings.width + margin.left + margin.right, height: settings.height +margin.top + margin.bottom}">
-				<g 
-					class="chart-y-axis"
-					:style="{transform: `translate(${margin.left}px, ${margin.top}px)`}"
+			<svg id="barChart" 
+				:style="{ width: settings.width + margin.left + margin.right, height: settings.height +margin.top + margin.bottom, marginTop: margin.top}">
+				<g class="chart-y-axis"
+					:height="settings.height + margin.top + margin.bottom"
+					:width="settings.width + margin.left + margin.right"
 					>
-					<template v-for="(d, i) in arrayY">
-						<g
-							class="chart-y-ticks"
-							:style="{transform: `translate(0, ${settings.height / 10 * i}px)`}"
-							>
-							<line x1="0" :x2="settings.width"></line>
-							<text x="-36" dy="0.32em">{{ d * 10 }}%</text>
-						</g>
-					</template>
+					<g v-for="(d, i) in calculatePath"
+						:style="{transform: `translate(0, ${settings.height - ((settings.height / calculatePath.length) * i)}px)`}">
+						<line x1="0" 
+							:x2="settings.width + margin.left">
+						</line>
+						<text 
+							x="0"
+							y="-5" 
+							dy="0.32em">
+							{{ max / calculatePath.length * i | parsedDevise }}
+						</text>
+					</g>
 				</g>
-				<transition-group 
-					v-if="datas != null"
-					appear
-					name="list"
-					mode="out-in"
-					tag="g" 
-					:style="{transform: `translate(${margin.left}px ,${margin.top}px)`}">
-					<rect 
-						class="bar"
-						v-for="(d, i) in chartData"
-						:x="scales.x(d.month)"
-						:y="scales.y(d.value)"
-						:width="scales.x.bandwidth()"
-						:height="settings.height - scales.y(d.value)"
-						:fill="fillColor(d.month)"
-						:key="d.month"
-						@mouseover="showTooltip(d.month, d.value)"
-						@mouseleave="tooltip.isVisible = false"
-					>
-					</rect>
-				</transition-group>
+				<g>
+					<transition-group 
+						v-if="expenses"
+						appear
+						name="list"
+						mode="out-in"
+						tag="g">
+							<g :key="d.month"
+								v-for="(d, i) in calculatePath"
+								:style="{transform: `translate(${margin.left + margin.top + 5}px , 0)`}">
+								<rect 
+									class="bar"
+									:x="scales.x0(d.month)"
+									:y="scales.y(d.earn)"
+									:width="scales.x1.bandwidth()"
+									:height="settings.height - scales.y(d.earn)"
+									fill="#3498db"
+									:key="d.month + d.earn"
+									@mouseover="showTooltip(d.month, d.earn)"
+									@mouseleave="tooltip.isVisible = false"
+								>
+								</rect>
+								<rect 
+									class="bar2"
+									:x="scales.x0(d.month) + 25"
+									:y="scales.y(d.spend)"
+									:width="scales.x1.bandwidth()"
+									:height="settings.height - scales.y(d.spend)"
+									fill="#e74c3c"
+									:key="d.month + d.spend"
+									@mouseover="showTooltip(d.month, d.spend)"
+									@mouseleave="tooltip.isVisible = false"
+								>
+								</rect>
+							</g>
+					</transition-group>
+				</g>	
 				<g class="chart-x-axis" :style="{transform: `translate(0 ,${settings.height}px)`}">
 					<g 
 						class="chart-x-label" 
-						v-for="(d, i) in chartData" 
-						:style="{transform: `translate(${(settings.width - margin.left - margin.right)}px, ${-settings.height + (i * 20)}px)`}"
+						v-for="(d, i) in calculatePath" 
+						:style="{transform: `translate(${15 + margin.right + margin.left + scales.x0(d.month)}px, 0)`}"
+						:width="scales.x0.bandwidth()"
 						>
-						<rect x="-5" y="6" width="10" height="10" :fill="fillColor(d.month)"></rect>
-						<text x="10" y="6" dy="0.71em">{{ d.month }}</text>
+						<rect x="-5" y="6" width="2" height="10" fill="#000"></rect>
+						<text x="-5" y="20" text-anchor="middle" dy="0.71em">{{ d.month | monthFr }}</text>
 					</g>
 				</g>
 			</svg>
 		</div>
-		<div class="tooltip" v-if="tooltip.isVisible" :style="{ transform: `translate(${tooltip.x - 10}px, ${tooltip.y - 10}px)` }">
-			<p>{{ tooltip.title }}: {{ tooltip.value }}%</p>
+		<div 
+			class="tooltip" 
+			v-if="tooltip.isVisible" 
+			:style="{ transform: `translate(${tooltip.x}px, ${tooltip.y}px)` }">
+			<p>
+				{{ tooltip.title | monthFr }} 
+				<br> 
+				{{ tooltip.value | devise}} 
+			</p>
 		</div>
 	</div>
 </template>
 
 <script>
-	import * as d3 from 'd3';
+	import * as d3 		from 'd3';
+	import {mapGetters} from 'vuex'
 
 	export default {
-		props: {
-			datas: {
-				type: Array,
-				default: () => []
-			}
-		},
 		data() {
 			return {
 				settings: {
@@ -92,48 +117,86 @@
 					x: '',
 					y: ''
 				},
-				sum: null,
-				chartData: null,
+				sum: {
+					earn: '',
+					spend: ''
+				},
+				defaultData: [
+					{month: 'Janvier', earn: 0},
+					{month: 'Février', earn: 0},
+					{month: 'Mars', earn: 0},
+					{month: 'Avril', earn: 0},
+					{month: 'Mai', earn: 0},
+					{month: 'Juin', earn: 0},
+					{month: 'Juillet', earn: 0},
+					{month: 'Août', earn: 0},
+					{month: 'Septembre', earn: 0},
+					{month: 'Octobre', earn: 0},
+					{month: 'Novembre', earn: 0},
+					{month: 'Décembre', earn: 0}
+				],
 				scales: null,
+				max: ''
 			}
 		},
-		watch: {
-			datas() {
-				this.calculatePath(this.datas)
-			}
+		computed: {
+			...mapGetters({
+				expenses: 'Return_allExpenses',
+				currentYear: 'Return_CurrentYear'
+			}),
+			calculatePath() {
+				if( !this.expenses ) return;
+				let data = this.filteredDatas()
+				if(data) {
+					this.sum.earn = data.reduce( (a, b) => a + b.earn, 0)
+					this.sum.spend = data.reduce( (a, b) => a + b.spend, 0)			
+				}
+				this.scales = this.getScales(data)
+				return data
+			},
 		},
 		methods: {
-			fillColor(month) {
-				return this.colors[month];
-			},
-			convertInPercent(data) {
-				this.sum = data.reduce( (a, b) => a + b.value, 0)
-				return data.map( x => {
-					return { month: x.month, value: parseFloat(x.value / this.sum * 100).toFixed(2) } 
-				})
-			},
+			filteredDatas() {
+				if(!this.expenses.length) return;
+
+				const primaryDatas = this.returnCurrentYear()
+
+				if( primaryDatas.length) {
+					let datas = primaryDatas[0].months.map( item => {
+						return item = {
+							earn: item.income,
+							month: item.month,
+							spend: item.outcome
+						}
+					})
+					return datas
+				}
+			},	
 			getScales(data) {
-				const x = d3.scaleBand().range([0, this.settings.width]).padding(0.1)
+				if( !data ) {
+					data = this.defaultData
+				}
+				const x0 = d3.scaleBand().range([0, this.settings.width]).padding(0.1)
+				const x1 = d3.scaleBand().padding(0.05)
 				const y = d3.scaleLinear().range([this.settings.height, 0])
 
-				x.domain(data.map( d => d.month ))
-				y.domain([0, 100])
+				this.max = d3.max(data.map( d => d3.max([d.earn, d.spend]) ))
+				x0.domain(data.map( d => d.month ))
+				x1.domain(data.map( d => d.month)).rangeRound([0, x0.bandwidth()])
+				y.domain([0, this.max])
 
-				return {x, y}
-			},
-			calculatePath(data) {
-				if( !data ) {
-					return
-				}
-				this.chartData = this.convertInPercent(data)
-				this.scales = this.getScales(this.chartData)
+				return {x0, x1, y}
 			},
 			showTooltip(name, value) {
 				this.tooltip.isVisible = true
 				this.tooltip.title = name
 				this.tooltip.value = value
-				this.tooltip.x = event.layerX
-				this.tooltip.y = event.layerY
+				this.tooltip.x = event.layerX + 70
+				this.tooltip.y = event.layerY + 20
+			},
+			returnCurrentYear() {
+				if(!this.expenses.length) return;
+				return this.expenses.filter( expense => expense.year === this.currentYear ? expense : [])
 			}
 		}
 	}
@@ -151,6 +214,9 @@
 	rect {
 		transform-origin: 0 320px; 
 	}
+	.card-body {
+		margin-top: 2em;
+	}
 	.chart-y-ticks {
 		display: flex;
 		flex-direction: column-reversed;
@@ -158,6 +224,9 @@
 		& > text {
 			fill: #c9d4d7;
 		}
+	}
+	.chart-x-axis {
+		text-align: center;
 	}
 	.card-chart .card-body {
 		position: relative;
@@ -168,6 +237,8 @@
 	.tooltip {
 		background-color: #fff;
 		position: absolute;
+		top: 0;
+		left: 0;
 		background-color: #fff;
 		border-radius: 4px;
 		box-shadow: 0 4px 24px -1px rgba(0,0,0,0.1);

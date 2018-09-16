@@ -8,17 +8,19 @@ TODO
 	#User can change name -> [OK]
 	#User can demand email verification -> [Need test and configure firebase]
 	#User can delete account -> [OK]
+	#User can select a devise
 	!!See errors returned by firebase once the request is done (even if it success)
 
 #Email confirmation
 	#Send email to confirm account -> [Partially implemented]
 
-#Add inbank Edit
+#Add inbank Edit -> [OK]
 
 #Show expenses by cat (by year choice) -> [OK]
 
 #Footer chart
-	#Bar chart of current year earning & spending
+	#Bar chart of current year earning & spending -> [OK]
+	!!See pb with tooltip position
 
 #Stats
 	#Find which chart to display
@@ -27,6 +29,7 @@ TODO
 	#Make date input show the current date -> [OK]
 	#Make category input suggestion while typing
 	#Make name input suggestion while typing 
+	#Save categories and name keywords for the searches when saving month
 
 #App
 	#Make a design

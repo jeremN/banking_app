@@ -1,6 +1,6 @@
 import moment from 'moment'
 
-const Utilities = {
+const appUtils = {
 	currentDate() { return moment().format('DD/MMMM/YYYY') },
 	currentYear() { return moment().format('YYYY') },
 	currentMonth() { return moment().format('MMMM') },
@@ -25,6 +25,10 @@ const Utilities = {
 			searches: {
 				categories: null,
 				names: null
+			},
+			autocomplete: {
+				suggest: '',
+				selected: ''
 			}
 		}
 	},
@@ -59,4 +63,4 @@ const Utilities = {
 	}*/
 }
 
-export default Utilities
+export default appUtils

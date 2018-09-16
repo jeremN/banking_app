@@ -1,9 +1,9 @@
 import Vue 						from 'vue'
 import axios 					from 'axios'
-import firebase 			from 'firebase'
+import firebase 				from 'firebase'
 
-import * as fakeDatas from '../../fakeDatas.json'
-import Utilities 			from '../../utilities'
+import * as fakeDatas 			from '../../fakeDatas.json'
+import Utilities 				from '../../utilities'
 
 const datas = JSON.stringify(fakeDatas)
 const state = Utilities.initialPayloadState()
@@ -18,6 +18,9 @@ const mutations = {
 			year: state.savedYear,
 			months: []
 		})
+	},
+	Update_Expenses( state, payload ) {
+		state.expenses = payload
 	},
 	New_MonthExpense( state, payload ) {
 		//Push new month datas in the obj, filtered by savedYear
@@ -102,8 +105,24 @@ const actions = {
 		//commit to mutation
 		commit('Add_Expenses', expensesArray)
 	},
-	Edit_Inbank( {commit, rootState}, payload ) {
+	Edit_Inbank( {commit, rootState, state}, payload ) {
+		let expensesArray = state.expenses
 
+		//Filter array by selected year, and find the corresponding month, then edit the inbank value
+		expensesArray.filter( expense => {
+			if(expense.year === payload.selectedYear) {
+				expense.months.map( item => {
+					if(item.month === payload.month) {
+						return item.inbank = payload.val
+					}
+				})
+			}
+		})
+
+		//send result to database
+		firebase.database().ref(`/users/${rootState.auth.user.id}/datas/expenses`).set(expensesArray)
+		//commit result to mutation
+		commit('Update_Expenses', expensesArray)
 	},
 	Prepare_MonthExpenses( {commit, state, rootState, dispatch}, isNewYear=false ) {
 
@@ -209,8 +228,14 @@ const getters = {
 	Return_allExpenses( state, getters ) {
 		return state.expenses
 	},
+	Return_CurrentYear( state, getters ) {
+		return state.currentYear
+	},
 	Return_Popin( state, getters ) {
 		return state.popin
+	},
+	Return_Suggestions( state, getters) {
+		return state.searches
 	}
 }
 

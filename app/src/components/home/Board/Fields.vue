@@ -58,8 +58,9 @@
 </template>
 
 <script>
-	import {mapActions} from 'vuex'
+	import {mapActions} 	from 'vuex'
 	import moment 			from 'moment'
+	import Autocomplete		from './Autocomplete.vue'
 
 	export default {
 		data() {
@@ -90,6 +91,9 @@
 					value: ''
 				}
 			},
+		},
+		components: {
+			appAutocomplete: Autocomplete
 		}
 	}
 </script>
