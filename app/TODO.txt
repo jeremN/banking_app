@@ -27,8 +27,9 @@ TODO
 
 #Add expense
 	#Make date input show the current date -> [OK]
-	#Make category input suggestion while typing
-	#Make name input suggestion while typing 
+	#Make simple category input suggestion while typing -> [OK]
+	#Make simple name input suggestion while typing -> [OK]
+	#Support arrow keys for suggestion
 	#Save categories and name keywords for the searches when saving month
 
 #App

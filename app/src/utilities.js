@@ -26,9 +26,9 @@ const appUtils = {
 				categories: null,
 				names: null
 			},
-			autocomplete: {
-				suggest: '',
-				selected: ''
+			search: {
+				term: '',
+				type: ''
 			}
 		}
 	},

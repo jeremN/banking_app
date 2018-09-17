@@ -100,6 +100,7 @@ const actions = {
 			rootState.payload.savedMonth = d.val().temporary.activeMonth
 			rootState.payload.savedYear = d.val().temporary.activeYear
 			rootState.payload.expenses = d.val().expenses
+			rootState.payload.searches = d.val().searches
 		})
 			.then(() => {
 				rootState.payload.currentMonth = Utilities.currentMonth()

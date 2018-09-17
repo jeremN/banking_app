@@ -45,6 +45,9 @@ const mutations = {
 			message: payload.message,
 			type: payload.type 
 		}
+	},
+	Set_SearchTerm( state, payload ) {
+		state.search = payload
 	}
 }
 
@@ -215,6 +218,9 @@ const actions = {
 			message: '',
 			type: '' 
 		})
+	},
+	Get_Term( {commit}, payload ) {
+		commit('Set_SearchTerm', payload)
 	}
 }
 
@@ -236,6 +242,10 @@ const getters = {
 	},
 	Return_Suggestions( state, getters) {
 		return state.searches
+	},
+	Return_SearchTerm( state, getters ) {
+		console.log(state.search)
+		return state.search
 	}
 }
 
