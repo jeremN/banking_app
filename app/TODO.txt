@@ -24,13 +24,14 @@ TODO
 
 #Stats
 	#Find which chart to display
+		-Pie for categories expenses (maybe per month || year)
 
 #Add expense
 	#Make date input show the current date -> [OK]
 	#Make simple category input suggestion while typing -> [OK]
 	#Make simple name input suggestion while typing -> [OK]
-	#Support arrow keys for suggestion
-	#Save categories and name keywords for the searches when saving month
+	#Support arrow keys for suggestion -> [OK]
+	#Save categories and name keywords for the searches when saving expense -> [OK]
 
 #App
 	#Make a design

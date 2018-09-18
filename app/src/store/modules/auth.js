@@ -15,7 +15,7 @@ const mutations = {
 	update_User( state, {payload, key}) {
 		state[key] = payload
 	},
-	clearState( state ) {
+	clear_State( state ) {
 		state = Utilities.initialAuthState()
 	},
 	set_Loading( state, bool ) {
@@ -150,8 +150,8 @@ const actions = {
 	},
 	//Sign out
 	user_SignOut( {commit} ) {
-		firebase.auth().signOut().then( () => {
-			commit('clearState')
+		firebase.auth().signOut().then( res => {
+			commit('clear_State')
 			router.push('/')
 		})
 		.catch( err => console.log(err))
@@ -265,6 +265,7 @@ const getters = {
 		return state.user
 	},
 	isAuthenticated( state, getters ) {
+		console.log(state.user)
 		return state.user !== null
 	},
 	hasError( state, getters ) {

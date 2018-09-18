@@ -22,7 +22,8 @@
 			return {
 				search: '',
 				results: [],
-				open: false
+				open: false,
+				arrowCounter: -1
 			}
 		},
 		props: ['isOpen', 'searched'],
@@ -56,6 +57,14 @@
 				console.log(payload)
 				this.setTerm(payload)
 				this.open = false;
+			},
+			onArrowDown() {
+				if( this.arrowCounter < this.results.length ) {
+					this.arrowCounter = this.arrowCounter + 1
+				}
+			},
+			onArrowUp() {
+				
 			}
 		}
 	}

@@ -12,6 +12,11 @@ const mutations = {
 	Add_Expenses( state, payload ) {
 		state.items = payload
 	},
+	Add_Searches( state, payload ) {
+		console.log(state.searches)
+		state.searches = payload
+		console.log(state.searches)
+	},
 	Init_Expenses( state, payload ) {
 		state.expenses = []
 		state.expenses.push({
@@ -45,9 +50,6 @@ const mutations = {
 			message: payload.message,
 			type: payload.type 
 		}
-	},
-	Set_SearchTerm( state, payload ) {
-		state.search = payload
 	}
 }
 
@@ -64,7 +66,7 @@ const actions = {
 		.then(res => console.log(res))
 		.catch(err => console.log(res))
 	},
-	Post_Expenses( {commit, state, rootState}, payload ) {
+	Post_Expenses( {commit, state, rootState, dispatch}, payload ) {
 		//if state.item false then it's an empty array, else if equal state.item
 		let expensesArray = !state.items ? [] : state.items
 		
@@ -72,10 +74,29 @@ const actions = {
 		expensesArray.push(payload)
 		
 		//add to database
-		firebase.database().ref(`/users/${rootState.auth.user.id}/datas/temporary/currentExpenses`).set(expensesArray)
+		firebase.database().ref(`/users/${rootState.auth.user.id}/datas/temporary/currentExpenses`).set(expensesArray).then( res => {
+			dispatch('Post_Search', {name: payload.name, category: payload.category})
+			//commit to mutation
+			commit('Add_Expenses', expensesArray)
+		})
+		.catch(err => console.log(err))
 		
-		//commit to mutation
-		commit('Add_Expenses', expensesArray)
+	},
+	Post_Search( {commit, state, rootState}, payload ) {
+		const searches = state.searches
+
+		//If key don't exist push it into array, else return false
+		searches.names.indexOf(payload.name) === -1 ? searches.names.push(payload.name) : false
+		searches.categories.indexOf(payload.category) === -1 ? searches.categories.push(payload.category) : false
+
+		//add to databse
+		firebase.database().ref(`/users/${rootState.auth.user.id}/datas/searches`).set(searches).then( res => {
+			console.log('Searches terms added to database')
+			//commit mutation
+			commit('Add_Searches', searches)
+		})
+		.catch(err => console.log(err))
+
 	},
 	Delete_Expenses( {commit, rootState, state}, payload ) {
 		let expensesArray = state.items
@@ -184,16 +205,15 @@ const actions = {
 
 		//If state.expenses is false, then commit init_expenses (create the expenses obj)
 		if( !state.expenses ) {
-			commit('Init_Expenses')
+			//commit('Init_Expenses')
 		}
-		commit('New_MonthExpense', datas)
+		//commit('New_MonthExpense', datas)
 
 		if( isNewYear ) {
 			commit('New_Year')
 			firebase.database().ref(`/users/${rootState.auth.user.id}/datas/temporary/activeYear`).set(Utilities.currentYear())		
 		}
-
-		dispatch('Post_MonthExpenses')
+		//dispatch('Post_MonthExpenses')
 	},
 	Post_MonthExpenses( {commit, state, rootState} ) {
 		//Add datas to firebase
@@ -218,9 +238,6 @@ const actions = {
 			message: '',
 			type: '' 
 		})
-	},
-	Get_Term( {commit}, payload ) {
-		commit('Set_SearchTerm', payload)
 	}
 }
 
@@ -242,10 +259,6 @@ const getters = {
 	},
 	Return_Suggestions( state, getters) {
 		return state.searches
-	},
-	Return_SearchTerm( state, getters ) {
-		console.log(state.search)
-		return state.search
 	}
 }
 

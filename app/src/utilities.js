@@ -25,10 +25,6 @@ const appUtils = {
 			searches: {
 				categories: null,
 				names: null
-			},
-			search: {
-				term: '',
-				type: ''
 			}
 		}
 	},

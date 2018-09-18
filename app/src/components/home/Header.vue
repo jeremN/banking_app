@@ -1,14 +1,6 @@
 <template>
     <header class="dashboard-header header">
         <h1>Dashboard</h1>
-        <ul v-if="isAuth">
-            <li class="header-link header-link-user">
-                <img src="#" alt="">
-                <span class="link-username">{{ user.name }}</span>
-                <span class="link-date">Dernière connexion: {{ currentTime }}</span>
-                <button type="button" @click.prevent="logOut">Logout</button>
-            </li>
-        </ul>
         <ul v-if="!isAuth">
             <li>
                 <router-link 
@@ -23,6 +15,14 @@
                 </router-link>
             </li>
 
+        </ul>
+        <ul v-if="isAuth">
+            <li class="header-link header-link-user">
+                <img src="#" alt="">
+                <span class="link-username">{{ user.name }}</span>
+                <span class="link-date">Dernière connexion: {{ currentTime }}</span>
+                <button type="button" @click.prevent="logOut">Logout</button>
+            </li>
         </ul>
     </header>
 </template>
