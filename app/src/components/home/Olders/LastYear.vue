@@ -69,7 +69,10 @@
                 v-for="(item, key, index) in expenseArray">
                 <app-item-bis :categories="item.months"></app-item-bis>
             </table>
-        </div>           
+        </div>    
+        <app-donut class="donut-container"
+            
+        ></app-donut>       
     </div>
 
 </template>
@@ -79,6 +82,7 @@
     import Item         from './Item.vue'
     import ItemBis      from './Itembis.vue'
     import Sidebar      from '../Sidebar.vue'
+    import Donut        from '../../home/Board/Donut.vue'
     import Utilities    from '../../../utilities'
 
     export default {
@@ -149,16 +153,24 @@
         components: {
             appItem: Item,
             appItemBis: ItemBis,
-            appSidebar: Sidebar
+            appSidebar: Sidebar,
+            appDonut: Donut
         }
     }
 	
 </script>
 
 <style lang="scss">
+    .donut-container {
+        grid-row-start: 2;
+        grid-column-start: 3;
+    }
     .table-container {
         width: 100%;
         display: flex;
+        grid-column-start: 2;
+        grid-column-end: 3;
+        grid-row-start: 2;
     }
     table {
         width: 100%;
@@ -189,6 +201,10 @@
     .filters-row {
         display: flex;
         flex-flow: row nowrap;
+        grid-column-start: 2;
+        grid-column-end: 3;
+        grid-row-start: 1;
+
         > div {
             flex-grow: 1;
             display: flex;

@@ -265,7 +265,6 @@ const getters = {
 		return state.user
 	},
 	isAuthenticated( state, getters ) {
-		console.log(state.user)
 		return state.user !== null
 	},
 	hasError( state, getters ) {
