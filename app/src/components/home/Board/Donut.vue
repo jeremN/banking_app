@@ -54,12 +54,15 @@
 			drawChart() {
 				this.initChart()
 
-				let path = d3.select('#donut > g').selectAll('path')
+				const path = d3.select('#donut > g').selectAll('path')
 					.data(this.settings.pie(this.datas))
 					.enter().append('path')
 						.attr('fill', (d,i) => this.settings.color(i))
 						.attr('d', this.settings.arc)
 						//.each( function(d) { this._current = d })
+			},
+			addLegend() {
+				const legend = d3.select('#donut').select()
 			}
 		}
 	}
