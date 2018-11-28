@@ -34,8 +34,8 @@ TODO
 	#Save categories and name keywords for the searches when saving expense -> [OK]
 
 #App
-	#Make a design
-	#Review/Rework components
+	#Make a design -> [OK]
+	#Review/Rework components -> [OK]
 	#Add responsive
 	#Add animation
 	#Add transition
