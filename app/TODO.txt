@@ -36,15 +36,7 @@ TODO
 #App
 	#Make a design -> [OK]
 	#Review/Rework components -> [OK]
-	#Add responsive
-	#Add animation
-	#Add transition
-	#Turn into PWA
-	#(BONUS) Scan receipt and recognize numbers
+	#Add responsive -> [OK]
+	#Add animation || transition
 	#Handle errors & loading states
 	!!See problem on log-out (header component don't refresh)
-
-#PWA
-	#Cache data
-	#Manifest
-	#See what can be implemented

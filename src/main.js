@@ -22,12 +22,6 @@ const firebaseKeys = {
 }
 */
 const firebaseKeys = {
-	apiKey: "AIzaSyD_qotVZSquQM5tB91MMx90-uzQG0u6Xh0",
-  authDomain: "banking-app-c457f.firebaseapp.com",
-  databaseURL: "https://banking-app-c457f.firebaseio.com",
-  projectId: "banking-app-c457f",
-  storageBucket: "banking-app-c457f.appspot.com",
-  messagingSenderId: "259505444433"
 }
 
 new Vue({

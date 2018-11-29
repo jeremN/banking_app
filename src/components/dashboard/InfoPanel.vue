@@ -61,8 +61,8 @@
                 let tempArray = []
                 this.expenses.items.find( a => {
                     if (a.type === type) {
-                        tempArray.push(Number(a.value) ) 
-                    }  
+                        tempArray.push(Number(a.value) )
+                    }
                 })
                 return tempArray
             },
@@ -90,7 +90,7 @@
                     return false
                 })
 
-                if( currentYearItem.length ) {                    
+                if( currentYearItem.length ) {                 
                     previousMonthItem = currentYearItem[0].months.filter( obj => {
                         if( obj.month === moment(appUtils.currentDate(), 'DD/MMMM/YYYY').subtract(1, 'months').format('MMMM') ) {
                             return obj
