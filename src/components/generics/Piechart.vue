@@ -1,10 +1,13 @@
 <template>
-
-	<div class="bar-chart">
+	<div class="card-chart">
+		<div class="card-header">
+			<h2>{{ title }}</h2>
+		</div>
 		<div class="card-body">
-			<svg id="barChart" 
-				:style="{ width: settings.width + margin.left + margin.right, height: settings.height + margin.top + margin.bottom, marginTop: margin.top}">
-				<g :style="{transform: `translate(${settings.width / 2}px, ${settings.height/ 2})`}"></g>		
+			<svg :id="chartId"
+				v-if="draw"
+				:style="{ width: settings.width + margin.left + margin.right, height: settings.height + margin.top + margin.bottom, marginTop: margin.top }">
+				<g :style="{ transform: `translate( ${settings.width / 2}px, ${settings.height / 2}px)`}"></g>
 			</svg>
 		</div>
 		<div 
@@ -29,14 +32,13 @@
 				settings: {
 					width: 600,
 					height: 600,
-					radius: '',
-					color: d3.scaleOrdinal(d3.schemeCategory10)
+					color: d3.scaleOrdinal(d3.schemeSpectral[3])
 				},
 				margin: {
 					top: 10,
 					right: 20,
-					bottom: 30,
-					left: 40
+					bottom: 10,
+					left: 20
 				},
 				tooltip: {
 					isVisible: false,
@@ -45,35 +47,35 @@
 					x: '',
 					y: ''
 				},
-				fakeD: {
-					earned: 23143.41,
-					spended: 21191.18,
-					saved: 3000
-				}
 			}
-		},/*
+		},
 		props: { 
-			datas: Array
-	 	},*/
+			datas: Array,
+			title: String,
+			chartId: String
+	 	},
+	 	mounted() {
+	 		this.draw()
+	 	},
 		methods: {
 			draw() {
-
-				this.settings.radius = Math.min(this.settings.width, this.settings.height) / 2;
+				let radius = Math.min(this.settings.width, this.settings.height) / 2
 
 				let arc = d3.arc()
-					.innerRadius(radius - 20)
-					.outerRadius(radius);
+					.innerRadius(radius - 100)
+					.outerRadius(radius - 20)
 
 				let pie = d3.pie()
-					.value(d => d.value)
+					.value(d => d[1])
 					.sort(null);
 
-				let path = d3.select('g').selectAll('path')
-					.data(pie(this.fakeD))
+				let path = d3.select(`#${this.chartId} > g`).selectAll('path')
+					.data(pie(this.datas))
 					.enter()
-					.append('path')
-					.attr('d', arc)
-					.attr('fill', (d, i) => this.settings.color(i))
+					.append('g')
+						.append('path')
+							.attr('d', arc)
+							.attr('fill', (d, i) => this.settings.color(i))
 			}
 		}
 	}
@@ -99,14 +101,21 @@
 			fill: #c9d4d7;
 		}
 	}
-	.chart-x-axis {
-		text-align: center;
-	}
-	.card-chart .card-body {
-		position: relative;
-		display: flex;
-		align-items: center;
-		justify-content: center;
+	.card {
+		&-x-axis {
+			text-align: center;
+		}
+		&-header {
+			padding: 1em;
+		}
+		&-chart {
+			.card-body {
+				position: relative;
+				display: flex;
+				align-items: center;
+				justify-content: center;				
+			}
+		}
 	}
 	.tooltip {
 		background-color: #fff;
@@ -119,12 +128,14 @@
 		padding: 1em;
 		font-size: 14px;
 	}
-   .list-enter-active, .list-leave-active {
-      transition: all 1s;
-      transform: scale(1,1)
-    }
-    .list-enter, .list-leave-to /* .list-leave-active for <2.1.8 */ {
-      opacity: 0;
-      transform: scale(1,0);
-    }
+  .list-enter-active, 
+  .list-leave-active {
+    transition: all 1s;
+    transform: scale(1,1)
+  }
+  .list-enter, 
+  .list-leave-to /* .list-leave-active for <2.1.8 */ {
+    opacity: 0;
+    transform: scale(1,0);
+  }
 </style>

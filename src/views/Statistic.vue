@@ -68,15 +68,23 @@
 					</div>
 				</div>
 			</div>
-			<div class="row">
+			<div class="row" v-if="filters.type === 'year'">
 				<div class="col-6">
 					<div class="panel chart">
-						<app-pie-chart></app-pie-chart>
+						<app-pie-chart
+							:datas="pieOutcome" 
+							:title="`Dépense / mois`"
+							:chartId="`pieChart1`">
+						</app-pie-chart>
 					</div>
 				</div>
-				<div class="col-6 col-offset-1">
+				<div class="col-6">
 					<div class="panel chart">
-
+						<app-pie-chart
+							:datas="pieIncome" 
+							:title="`Revenus / mois`"
+							:chartId="`pieChart2`">
+						</app-pie-chart>
 					</div>
 				</div>
 			</div>
@@ -183,7 +191,12 @@
 						'Epargne'
 					]
 				},
-				monthsOutput: []
+				monthsOutput: [],
+				fakeD: [
+					[ "earned", 23143.41 ],
+					[ "spended", 21191.18 ],
+					[ "saved", 3000 ]
+				]
 			}
 		},
 		mounted() {
@@ -206,9 +219,16 @@
       totalEarned() { return parseFloat(this.getSumArray('income')).toFixed(2) },
       totalSpended() { return parseFloat(this.getSumArray('outcome')).toFixed(2) },
       totalInBank() {},
-      pieChartData() {
-
-      }
+      pieOutcome() { 
+      	if(this.expenses.length) {
+      		return this.filteredArray()[0].months.map( item => [ item.month, item.outcome ]) 
+      	}
+      },
+      pieIncome() { 
+      	if(this.expenses.length) {
+      		return this.filteredArray()[0].months.map( item => [ item.month, item.income ]) 
+      	}
+      },
 		},
     methods: {
         getSumArray(key) {
@@ -231,7 +251,7 @@
 			appTable: Table,
 			appTd: Td,
 			appTdCat: TdCat,
-			appPieChart: PieChart
+			appPieChart: PieChart,
 		}
 	}
 </script>
