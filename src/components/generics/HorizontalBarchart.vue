@@ -1,5 +1,6 @@
 <template>
 	<div class="bar-chart">
+		<div>{{ datas }}</div>
 		<div class="card-body">
 			<svg id="barChart" 
 				:style="{ width: settings.width + margin.left + margin.right, height: settings.height +margin.top + margin.bottom, marginTop: margin.top}"
@@ -33,10 +34,10 @@
 								:style="{transform: `translate(${margin.left + margin.top + 5}px , 0)`}">
 								<rect 
 									class="bar"
-									:x="scales.x0(d[xVal])"
-									:y="scales.y(d[yVal[0]])"
-									:width="scales.x1.bandwidth()"
-									:height="settings.height - scales.y(d[yVal[0]])"
+									:y="scales.y(d[xVal])"
+									:x="scales.x([yVal[0]])"
+									:height="scales.y.bandwidth()"
+									:width="settings.width - scales.x(d[yVal[0]])"
 									fill="#3498db"
 									:key="d[xVal] + d.earn"
 									@mouseover="showTooltip(d[xVal], d[yVal[0]])"
@@ -45,10 +46,10 @@
 								</rect>
 								<rect 
 									class="bar2"
-									:x="scales.x0(d[xVal]) + 25"
-									:y="scales.y(d[yVal[1]])"
-									:width="scales.x1.bandwidth()"
-									:height="settings.height - scales.y(d[yVal[1]])"
+									:y="scales.y(d[xVal]) + 25"
+									:x="scales.x(d[yVal[1]])"
+									:height="scales.y.bandwidth()"
+									:width="settings.height - scales.x(d[yVal[1]])"
 									fill="#e74c3c"
 									:key="d[xVal] + d[yVal[1]]"
 									@mouseover="showTooltip(d[xVal], d[yVal[1]])"
@@ -62,7 +63,7 @@
 					<g 
 						class="chart-x-label" 
 						v-for="(d, i) in datas" 
-						:style="{transform: `translate(${15 + margin.right + margin.left + scales.x0(d[xVal])}px, 0)`}"
+						:style="{transform: `translate(${15 + margin.right + margin.left + scales.x(d[xVal])}px, 0)`}"
 						:width="scales.x0.bandwidth()"
 						>
 						<rect x="-5" y="6" width="2" height="10" fill="#000"></rect>
@@ -85,7 +86,7 @@
 </template>
 
 <script>
-	import * as d3 from 'd3';
+	import * as d3 from 'd3'
 
 	export default {
 		data() {
@@ -130,8 +131,7 @@
 		},
 		props: {
 			datas: Array,
-			xVal: String,
-			yVal: Array
+			chartTitle: String,
 		},
 		mounted() {
 			this.scales
@@ -146,16 +146,13 @@
 				if( !data || typeof data === undefined ) {
 					return
 				}
-				const x0 = d3.scaleBand().range([0, this.settings.width]).padding(0.1)
-				const x1 = d3.scaleBand().padding(0.05)
-				const y = d3.scaleLinear().range([this.settings.height, 0])
+				const y = d3.scaleBand().range([0, this.settings.width]).padding(0.1)
+				const x = d3.scaleLinear().range([this.settings.height, 0])
 
-				this.max = d3.max(data.map( d => d3.max([d[this.yVal[0]], d[this.yVal[1]]]) ))
-				x0.domain(data.map( d => d.month ))
-				x1.domain(data.map( d => d[this.xVal])).rangeRound([0, x0.bandwidth()])
-				y.domain([0, this.max])
+				y.domain(data.map( d => d.month ))
+				x.domain([0, d3.max([0, d[this.xVal[1]]])])
 
-				return {x0, x1, y}
+				return {x, y}
 			},
 			showTooltip(name, value) {
 				this.tooltip.isVisible = true
@@ -167,53 +164,3 @@
 		}
 	}
 </script>
-
-<style lang='scss' scoped>
-	line {
-		stroke: #f4f7f9;
-		stroke-width: 2px;
-	}
-	text {
-		font-size: 12px;
-		font-weight: bold;
-	}
-	rect {
-		transform-origin: 0 320px; 
-	}
-	.chart-y-ticks {
-		display: flex;
-		flex-direction: column-reversed;
-
-		& > text {
-			fill: #c9d4d7;
-		}
-	}
-	.chart-x-axis {
-		text-align: center;
-	}
-	.card-chart .card-body {
-		position: relative;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
-	.tooltip {
-		background-color: #fff;
-		position: absolute;
-		top: 0;
-		left: 0;
-		background-color: #fff;
-		border-radius: 4px;
-		box-shadow: 0 4px 24px -1px rgba(0,0,0,0.1);
-		padding: 1em;
-		font-size: 14px;
-	}
-   .list-enter-active, .list-leave-active {
-      transition: all 1s;
-      transform: scale(1,1)
-    }
-    .list-enter, .list-leave-to /* .list-leave-active for <2.1.8 */ {
-      opacity: 0;
-      transform: scale(1,0);
-    }
-</style>

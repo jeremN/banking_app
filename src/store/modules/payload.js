@@ -147,59 +147,66 @@ const actions = {
 		commit('Update_Expenses', expensesArray)
 	},
 	Prepare_MonthExpenses( {commit, state, rootState, dispatch}, isNewYear=false ) {
-
 		const datas = {
 			categories: [],
 			inbank: '',
-			income: '',
-			outcome: '', 
+			income: 0,
+			outcome: 0, 
 			month: state.savedMonth
 		}
 
-		//Make all value number type (avoid string)
-		const arr = state.items.map( item => {
-			return {
-				name: item.name,
-				value: Number(item.value),
-				category: item.category,
-				type: item.type,
-				date: item.date
-			}
-		})
+		if( state.items ) {
+		
+			//Make all value number type (avoid string)
+			const arr = state.items.map( item => {
+				return {
+					name: item.name,
+					value: Number(item.value),
+					category: item.category,
+					type: item.type,
+					date: item.date
+				}
+			})
 
-		//Output new object with all key and values as array
-		const reduceArray = arr.reduce((item, next) => {
-			let cat = next.category 
-			let type = next.type
-			
-			if( !item[cat] ) {
-				item[cat] = []
-			}
-			
-			if( !item[type] ) {
-				item[type] = []
-			}
-			item[cat].push(next.value)
-			item[type].push(next.value)
+			//Output new object with all key and values as array
+			const reduceArray = arr.reduce((item, next) => {
+				let cat = next.category 
+				let type = next.type
+				
+				if( !item[cat] ) {
+					item[cat] = []
+				}
+				
+				if( !item[type] ) {
+					item[type] = []
+				}
+				item[cat].push(next.value)
+				item[type].push(next.value)
 
-			return item
-		}, {})
+				return item
+			}, {})
 
-		//Push value inside tempObj, and sum all values in array for each key
-		Object.keys(reduceArray).map( key => {
-			if( key === 'income' ) {
-				datas.income = parseFloat(appUtils.sum(reduceArray[key]).toFixed(2))
-			}
-			else if( key === 'outcome' ) {
-				datas.outcome = parseFloat(appUtils.sum(reduceArray[key]).toFixed(2))
-			}
-			else {
-				datas.categories.push({
-					name: key,
-					value: appUtils.sum(reduceArray[key])
-				})
-			}
-		})
+
+			//Push value inside tempObj, and sum all values in array for each key
+			Object.keys(reduceArray).map( key => {
+				if( key === 'income' ) {
+					datas.income = parseFloat(appUtils.sum(reduceArray[key]).toFixed(2))
+				}
+				else if( key === 'outcome' ) {
+					datas.outcome = parseFloat(appUtils.sum(reduceArray[key]).toFixed(2))
+				}
+				else {
+					datas.categories.push({
+						name: key,
+						value: appUtils.sum(reduceArray[key])
+					})
+				}
+			})
+		}
+
+		if( !state.items) {
+			datas.categories = [ {name: " ", value: 0} ]
+		}
 
 		//If state.expenses is false, then commit init_expenses (create the expenses obj)
 		if( !state.expenses ) {
