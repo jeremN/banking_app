@@ -32,7 +32,7 @@
 				settings: {
 					width: 600,
 					height: 600,
-					color: d3.scaleOrdinal(d3.schemeSpectral[3])
+					color: d3.scaleOrdinal(d3.schemeYlGnBu[7])
 				},
 				margin: {
 					top: 10,
@@ -62,20 +62,31 @@
 				let radius = Math.min(this.settings.width, this.settings.height) / 2
 
 				let arc = d3.arc()
-					.innerRadius(radius - 100)
+					.innerRadius(radius - 60)
 					.outerRadius(radius - 20)
+
+				let labelArc = d3.arc()
+					.innerRadius(radius - 30)
+					.outerRadius(radius - 30)
 
 				let pie = d3.pie()
 					.value(d => d[1])
 					.sort(null);
 
-				let path = d3.select(`#${this.chartId} > g`).selectAll('path')
+				let g = d3.select(`#${this.chartId} > g`).selectAll('.arc')
 					.data(pie(this.datas))
 					.enter()
 					.append('g')
-						.append('path')
+					.attr('class', 'arc')
+
+				let path = g.append('path')
 							.attr('d', arc)
 							.attr('fill', (d, i) => this.settings.color(i))
+
+				let labels = g.append('text')
+								.attr('transform', (d) => `translate(${labelArc.centroid(d)})`)
+								.attr('dy', '.5em')
+								.text((d) => d.data[0])
 			}
 		}
 	}
