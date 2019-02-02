@@ -111,7 +111,7 @@ const actions = {
 						type: 'month'
 					}
 				}
-				if( rootState.payload.savedYear !== rootState.payload.currentYear 
+				else if( rootState.payload.savedYear !== rootState.payload.currentYear 
 					&& rootState.payload.savedMonth !== rootState.payload.currentMonth) {
 					rootState.payload.popin = {
 						isActiv: true,

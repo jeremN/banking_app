@@ -6,26 +6,26 @@
 		<ul class="header-list">
 			<li class="header-item">
 				<router-link 
-					class="header-link header-register" 
-					to="Signin">
-					Se connecter
-				</router-link>
+				class="header-link header-register" 
+				to="Signin">
+				Se connecter
+			</router-link>
 			</li>
 			<li class="header-item">
 				<router-link 
-					class="header-link header-register" 
-					to="Register">
-					Créer un compte
-				</router-link>
+				class="header-link header-register" 
+				to="Register">
+				Créer un compte
+			</router-link>
 			</li>
 		</ul>
 	</header>
 </template>
 
 <script>
-	import Header from '@/components/partials/Header.vue'
-	import Sidebar from '@/components/partials/Sidebar.vue'
-	import Footer from '@/components/partials/Footer.vue'
+	import Header from '@/components/Header.vue'
+	import Sidebar from '@/components/Sidebar.vue'
+	import Footer from '@/components/Footer.vue'
 
 	export default {
 	  components: {

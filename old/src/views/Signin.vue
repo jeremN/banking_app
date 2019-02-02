@@ -5,7 +5,7 @@
     	@submit.prevent="onSubmit">
 
         <h1>Se connecter</h1>
-        <div class="form__group">
+        <div class="form-group">
             <label for="email" class="form-label">Email</label>
             <input 
             	id="email" 
@@ -15,7 +15,7 @@
             	v-model="user.email"
             	required>
         </div>
-        <div class="form__group">
+        <div class="form-group">
             <label for="password" class="form-label">Mot de passe</label>
             <input 
             	id="password" 
@@ -25,8 +25,8 @@
             	v-model="user.password" 
             	required>
         </div>
-        <div class="form__group">
-            <button class="btn btn--blue" type="submit">Se connecter</button>
+        <div class="form-group">
+            <button class="btn btn-blue" type="submit">Se connecter</button>
         </div>
         <div class="form-group form-other">
         	<router-link 

@@ -3,91 +3,95 @@
 		<app-header></app-header>
 		<app-sidebar></app-sidebar>
 		<main class="content">
-			<div 
-				class="row"
-				v-if="expenses.length">
-				<div class="col-4 filters">
-					<div 
-					class="form-group form-group-radio"
-					v-for="filter in filterArray">
-					<input 
-					class="form-field"
-					type="radio" 
-					name="statFilter"
-					:value=filter
-					v-model="filters.checked">
-					<label>{{ filter }}</label>
-					</div>
-				</div>
-				<div class="col-4 filters">
-					<div class="form-group form-group-radio">
-						<input 
-						id="annualFilter"
-						class="form-field" 
-						type="radio" 
-						name="typeFilter"
-						value="year"
-						v-model="filters.type">
-						<label for="annualFilter">Année</label>
-					</div>
-					<div class="form-group form-group-radio">
-						<input 
-						id="catFilter"
-						class="form-field" 
-						type="radio" 
-						name="typeFilter"
-						value="cats"
-						v-model="filters.type">
-						<label for="catFilter">Catégories</label>
-					</div>
-				</div>
-				<div class="col-4 filters">
-					<div class="form-group form-group-radio">
-						<input 
-						id="isTable"
-						class="form-field"
-						type="radio"
-						name="showTables"
-						value="showTab"
-						v-model="sort.type">
-						<label for="isTable">
-							<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" data-prefix="fas" data-icon="th" class="svg-inline--fa fa-th fa-w-16" role="img" viewBox="0 0 512 512" width="20" height="20"><path fill="currentColor" d="M149.333 56v80c0 13.255-10.745 24-24 24H24c-13.255 0-24-10.745-24-24V56c0-13.255 10.745-24 24-24h101.333c13.255 0 24 10.745 24 24zm181.334 240v-80c0-13.255-10.745-24-24-24H205.333c-13.255 0-24 10.745-24 24v80c0 13.255 10.745 24 24 24h101.333c13.256 0 24.001-10.745 24.001-24zm32-240v80c0 13.255 10.745 24 24 24H488c13.255 0 24-10.745 24-24V56c0-13.255-10.745-24-24-24H386.667c-13.255 0-24 10.745-24 24zm-32 80V56c0-13.255-10.745-24-24-24H205.333c-13.255 0-24 10.745-24 24v80c0 13.255 10.745 24 24 24h101.333c13.256 0 24.001-10.745 24.001-24zm-205.334 56H24c-13.255 0-24 10.745-24 24v80c0 13.255 10.745 24 24 24h101.333c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24zM0 376v80c0 13.255 10.745 24 24 24h101.333c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24H24c-13.255 0-24 10.745-24 24zm386.667-56H488c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24H386.667c-13.255 0-24 10.745-24 24v80c0 13.255 10.745 24 24 24zm0 160H488c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24H386.667c-13.255 0-24 10.745-24 24v80c0 13.255 10.745 24 24 24zM181.333 376v80c0 13.255 10.745 24 24 24h101.333c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24H205.333c-13.255 0-24 10.745-24 24z"/></svg>						
-						</label>
-					</div>
-					<div class="form-group form-group-radio">
-						<input 
-						id="isChart"
-						class="form-field"
-						type="radio"
-						name="showTables"
-						value="showTab"
-						v-model="sort.type">
-						<label for="isChart">
-							<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" data-prefix="far" data-icon="chart-bar" class="svg-inline--fa fa-chart-bar fa-w-16" role="img" viewBox="0 0 512 512" width="20" height="20"><path fill="currentColor" d="M396.8 352h22.4c6.4 0 12.8-6.4 12.8-12.8V108.8c0-6.4-6.4-12.8-12.8-12.8h-22.4c-6.4 0-12.8 6.4-12.8 12.8v230.4c0 6.4 6.4 12.8 12.8 12.8zm-192 0h22.4c6.4 0 12.8-6.4 12.8-12.8V140.8c0-6.4-6.4-12.8-12.8-12.8h-22.4c-6.4 0-12.8 6.4-12.8 12.8v198.4c0 6.4 6.4 12.8 12.8 12.8zm96 0h22.4c6.4 0 12.8-6.4 12.8-12.8V204.8c0-6.4-6.4-12.8-12.8-12.8h-22.4c-6.4 0-12.8 6.4-12.8 12.8v134.4c0 6.4 6.4 12.8 12.8 12.8zM496 400H48V80c0-8.84-7.16-16-16-16H16C7.16 64 0 71.16 0 80v336c0 17.67 14.33 32 32 32h464c8.84 0 16-7.16 16-16v-16c0-8.84-7.16-16-16-16zm-387.2-48h22.4c6.4 0 12.8-6.4 12.8-12.8v-70.4c0-6.4-6.4-12.8-12.8-12.8h-22.4c-6.4 0-12.8 6.4-12.8 12.8v70.4c0 6.4 6.4 12.8 12.8 12.8z"/></svg>						
-						</label>
-					</div>
-				</div>
-			</div>
-			<div class="row" v-if="filters.type === 'year'">
-				<div class="col-6">
-					<div class="panel chart">
-						<app-pie-chart
-						:datas="pieOutcome" 
-						:title="`Dépense / mois`"
-						:chartId="`pieChart1`">
-						</app-pie-chart>
-					</div>
-				</div>
-				<div class="col-6">
-						<div class="panel chart">
-						<app-horizontal-bar-chart
-							:datas="categoriesSorting"
-							:chartTitle="`Dépense / mois`">
-						</app-horizontal-bar-chart>
-					</div>
-				</div>
+			<div class="row">
+				<h1 class="content__title">Statistics</h1>
 			</div>
 			<div class="row">
+				<div class="col-8 form--inline card card--transparent">
+					<div><strong>Trier par:</strong></div>
+					<div 
+						class="form__group form__group--radio"
+						v-for="filter in filterArray">
+						<input 
+							class="form-field"
+							type="radio" 
+							name="statFilter"
+							:value=filter
+							v-model="filters.checked">
+						<label>
+							<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" data-prefix="fas" data-icon="circle" class="svg-inline--fa fa-circle fa-w-16" role="img" viewBox="0 0 512 512" width="10" height="10">
+								<path fill="currentColor" d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8z"/>
+							</svg>
+							{{ filter }}
+						</label>
+					</div>
+					<span class="separator"></span>
+					<div class="form__group form__group--radio">
+						<input 
+							id="annualFilter"
+							class="form-field" 
+							type="radio" 
+							name="typeFilter"
+							value="year"
+							:disabled="sort === 'chart'"
+							v-model="filters.type">
+						<label for="annualFilter">
+							<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" data-prefix="fas" data-icon="circle" class="svg-inline--fa fa-circle fa-w-16" role="img" viewBox="0 0 512 512" width="10" height="10">
+								<path fill="currentColor" d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8z"/>
+							</svg>
+							Année
+						</label>
+					</div>
+					<div class="form__group form__group--radio">
+						<input 
+							id="catFilter"
+							class="form-field" 
+							type="radio" 
+							name="typeFilter"
+							value="cats"
+							:disabled="sort === 'chart'"
+							v-model="filters.type">
+						<label for="catFilter">
+							<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" data-prefix="fas" data-icon="circle" class="svg-inline--fa fa-circle fa-w-16" role="img" viewBox="0 0 512 512" width="10" height="10">
+								<path fill="currentColor" d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8z"/>
+							</svg>
+							Catégories
+						</label>
+					</div>
+				</div>
+				<div class="col-4 form--inline card card--noStyle card--filter">
+					<button 
+						class="btn btn--white" 
+						:class="{is__active : sort === 'table'}" 
+						@click="sort = 'table'">
+						<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" data-prefix="fas" data-icon="th-list" class="svg-inline--fa fa-th-list fa-w-16" role="img" viewBox="0 0 512 512" width="20" height="20">
+							<path fill="currentColor" d="M149.333 216v80c0 13.255-10.745 24-24 24H24c-13.255 0-24-10.745-24-24v-80c0-13.255 10.745-24 24-24h101.333c13.255 0 24 10.745 24 24zM0 376v80c0 13.255 10.745 24 24 24h101.333c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24H24c-13.255 0-24 10.745-24 24zM125.333 32H24C10.745 32 0 42.745 0 56v80c0 13.255 10.745 24 24 24h101.333c13.255 0 24-10.745 24-24V56c0-13.255-10.745-24-24-24zm80 448H488c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24H205.333c-13.255 0-24 10.745-24 24v80c0 13.255 10.745 24 24 24zm-24-424v80c0 13.255 10.745 24 24 24H488c13.255 0 24-10.745 24-24V56c0-13.255-10.745-24-24-24H205.333c-13.255 0-24 10.745-24 24zm24 264H488c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24H205.333c-13.255 0-24 10.745-24 24v80c0 13.255 10.745 24 24 24z"/>
+						</svg>					
+					</button>
+					<button 
+						class="btn btn--white" 
+						@click="sort = 'chart'" 
+						:class="{is__active : sort === 'chart'}">
+						<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" data-prefix="far" data-icon="chart-bar" class="svg-inline--fa fa-chart-bar fa-w-16" role="img" viewBox="0 0 512 512" width="20" height="20"><path fill="currentColor" d="M396.8 352h22.4c6.4 0 12.8-6.4 12.8-12.8V108.8c0-6.4-6.4-12.8-12.8-12.8h-22.4c-6.4 0-12.8 6.4-12.8 12.8v230.4c0 6.4 6.4 12.8 12.8 12.8zm-192 0h22.4c6.4 0 12.8-6.4 12.8-12.8V140.8c0-6.4-6.4-12.8-12.8-12.8h-22.4c-6.4 0-12.8 6.4-12.8 12.8v198.4c0 6.4 6.4 12.8 12.8 12.8zm96 0h22.4c6.4 0 12.8-6.4 12.8-12.8V204.8c0-6.4-6.4-12.8-12.8-12.8h-22.4c-6.4 0-12.8 6.4-12.8 12.8v134.4c0 6.4 6.4 12.8 12.8 12.8zM496 400H48V80c0-8.84-7.16-16-16-16H16C7.16 64 0 71.16 0 80v336c0 17.67 14.33 32 32 32h464c8.84 0 16-7.16 16-16v-16c0-8.84-7.16-16-16-16zm-387.2-48h22.4c6.4 0 12.8-6.4 12.8-12.8v-70.4c0-6.4-6.4-12.8-12.8-12.8h-22.4c-6.4 0-12.8 6.4-12.8 12.8v70.4c0 6.4 6.4 12.8 12.8 12.8z"/></svg>						
+					</button>
+				</div>
+			</div>
+			<div class="row" v-if="sort === 'chart'">
+				<div class="col-8 card">
+					<app-bar-chart
+						:title="`Revenu &amp; Dépenses ${filters.checked}`"
+						:datas="calculatePath"
+						:xVal="values.x"
+						:yVal="values.y">
+					</app-bar-chart>
+				</div>
+				<div class="col-4 card">
+					<div class="card__header">
+						<h2>Graph</h2>
+					</div>
+				</div>
+			</div>
+			<div class="row" v-if="sort === 'table'">
 				<div class="col-12">
 					<app-table>
 						<template slot="theader">
@@ -104,38 +108,39 @@
 										{{ title }}
 									</th>
 								</tr>
-							</thead>
+							</thead>					
 						</template>
 						<template 
 							slot="tbody"
 							v-if="filters.type === 'year'"
 							v-for="item in expenseArray">
 							<tbody>
-								<app-td 
-									v-for="(expense, index) in item.months"
+								<app-year-td
+									v-for="(expense, i) in item.months"
 									:expense="expense"
-									:key="index"
-									:id="index"
+									:key="i"
+									:id="expense.month + i"
 									:year="filters.checked">
-								</app-td>
+								</app-year-td>
 							</tbody>
 						</template>
-						<template 
-							v-if="filters.type === 'cats'"
+						<template
 							slot="tbody"
-							v-for="(item, key, index) in expenseArray">
-							<app-td-cat :categories="item.months">
-							</app-td-cat>
+							v-else
+							v-for="(item, key, i) in expenseArray">
+							<app-cat-td :categories="item.months"></app-cat-td>		
 						</template>
 						<template 
 							slot="tfooter"
 							v-if="filters.type === 'year'">
-							<tr>
-								<td></td>
-								<td>{{ totalSpended | devise }}</td>
-								<td>{{ totalEarned | devise  }}</td>
-								<td></td>
-							</tr>
+							<tfoot>
+								<tr>
+									<td>Total</td>
+									<td class="yellow">{{ totalSpended | devise }}</td>
+									<td class="green">{{ totalEarned | devise  }}</td>
+									<td></td>
+								</tr>
+							</tfoot>
 						</template>
 					</app-table>
 				</div>
@@ -145,27 +150,33 @@
 </template>
 
 <script>
-	import Header from '@/components/Header.vue'
-	import Sidebar from '@/components/Sidebar.vue'
-	import Footer from '@/components/Footer.vue'
-	import Table from '@/components/generics/Table.vue'
-	import Td from '@/components/statistics/Td.vue'
-	import TdCat from '@/components/statistics/TdCategory.vue'
-	import PieChart from '@/components/generics/Piechart.vue'
-	import HorizontalBarChart from '@/components/generics/HorizontalBarchart.vue'
+	import Header from '@/components/partials/Header.vue'
+	import Sidebar from '@/components/partials/Sidebar.vue'
+	import Footer from '@/components/partials/Footer.vue'
+	import Table from '@/components/partials/Table.vue'
+	import TdYear from '@/components/partials/YearTd.vue'
+	import TdCat from '@/components/partials/CatTd.vue'
+	import BarChart from '@/components/partials/BarChart.vue'
 
+	import * as d3 from 'd3'
 	import { appUtils } from '@/functionsUtils'
 	import { mapGetters } from 'vuex'
 
 	export default {
 		data() {
 			return {
-				sort: {
-					type: 'table'
+				sum: {
+					earn: '',
+					spend: ''
 				},
+				values: {
+					x: 'month',
+					y: ['earn', 'spend'],
+				},
+				sort: 'table',
 				filters: {
 					checked: '',
-					type: 'year'
+					type: 'year',
 				},
 				edit: false,
 				tables: {
@@ -205,7 +216,7 @@
 		},
 		computed: {
 			...mapGetters({
-				expenses: 'Return_allExpenses'
+				expenses: 'Return_allExpenses',
 			}),
 			expenseArray() {
 				if(!this.expenses.length) return;
@@ -236,7 +247,16 @@
 						})
 					return months
 				}
-			}
+			},
+			calculatePath() {
+				if( !this.expenses ) return;
+				let data = this.filteredDatas()
+				if(data) {
+					this.sum.earn = data.reduce( (a, b) => a + b.earn, 0)
+					this.sum.spend = data.reduce( (a, b) => a + b.spend, 0)			
+				}
+				return data
+			},
 		},
 		methods: {
 			getSumArray(key) {
@@ -250,62 +270,147 @@
 			},
 			filteredArray() {
 				return this.expenses.filter(expense => expense.year === this.filters.checked ? expense.months : false)
-			}
+			},
+			returnCurrentYear() {
+				if(!this.expenses.length) return;
+				let exp = []
+				this.expenses.filter( expense => {
+					if (expense.year === this.filters.checked) {
+						exp = expense
+					}
+				})
+				return exp
+			},
+			filteredDatas() {
+				if (!this.expenses.length) return;
+				let datas = []
+				const primaryDatas = this.returnCurrentYear()
+				if (primaryDatas) {
+					let datas = primaryDatas.months.map( item => {
+						return item = {
+							earn: item.income,
+							month: item.month,
+							spend: item.outcome
+						}
+					})
+					return datas
+				}
+			},
+
 		},
 		components: {
 			appHeader: Header,
 			appSidebar: Sidebar,
 			appFooter: Footer,
 			appTable: Table,
-			appTd: Td,
-			appTdCat: TdCat,
-			appPieChart: PieChart,
-			appHorizontalBarChart: HorizontalBarChart
+			appYearTd: TdYear,
+			appCatTd: TdCat,
+			appBarChart: BarChart,
 		}
 	}
 </script>
 
 <style lang="scss" scoped>
-.filters {
-	display: flex;
-	align-items: center;
-}
-.form {
-	&-group {
-		&-radio {
-			position: relative;
-			width: auto;
-			max-width: 120px;
-			margin-right: 1em;
+	.content > .row {
+		&:first-child { margin-top: 2rem; }
+	}
 
-			input, label {
-				width: 120px;
-			}
+	strong { font-weight: 700; }
+	.separator {
+		width: 1px;
+		height: 40px;
+		background-color: rgb(234, 237, 244);
+	}
+	.filters {
+		display: flex;
+		align-items: center;
+	}
+	.row {
+		justify-content: flex-start;
+	}
+	.card {
+		justify-content: space-evenly;
 
-			input[type="radio"] { 
-				position: absolute;
-				opacity: 0;
-				height: 100%;
-				cursor: pointer;
+		&--noStyle {
+			background: none;
+			border: none;
+		}
 
-				&:checked {
+		&--filter {
+			justify-content: flex-end;
 
-					+ label {
-						background-color: #4c84ff;
-						color: #ffffff;
-					}
-				}
-			}
-
-			label {
-				background-color: transparent;
-				border: 1px solid #d7d6d9;
-				padding: 0.5em 1.5em;
-				display: flex;
-				align-items: center;
-				justify-content: center;
+			.btn  {
+				&:first-child { margin-right: 1rem; }
 			}
 		}
 	}
-}
+	.form {
+		&--inline {
+			display: flex;
+		}
+		&__group {
+			&--radio {
+				position: relative;
+				width: auto;
+				max-width: 120px;
+
+				input { border: none; }
+
+				input, label {
+					width: 120px;
+				}
+
+				input:disabled,
+				input:disabled ~ label {
+					cursor: not-allowed !important;
+				}
+
+				input[type="radio"] { 
+					position: absolute;
+					opacity: 0;
+					height: 100%;
+					cursor: pointer;
+
+					&:checked {
+
+						+ label {
+							color: #4c84ff;
+						}
+					}
+				}
+
+				label {
+					background-color: transparent;
+					padding: 0.5em;
+					display: flex;
+					align-items: center;
+					justify-content: center;
+				}
+			}
+		}
+	}
+
+	label {
+		> svg { margin-right: 0.5rem; }
+	}
+
+	.btn {
+		&--transparent {
+			border: 1px solid rgb(234, 237, 244)
+		}
+
+		&--white {
+			background-color: rgb(255, 255, 255);
+			border: 1px solid rgb(234, 237, 244);
+			width: 50px;
+			height: 50px;
+			border-radius: 4px;
+			color: rgb(220,220,220);
+
+			&.is__active {
+				background-color: rgb(76,132,255);
+				color: rgb(255, 255, 255);
+			}
+		}
+	}
 </style>

@@ -3,41 +3,61 @@
 		<app-header></app-header>
 		<app-sidebar></app-sidebar>
 		<main class="content">
-			<app-inline-form></app-inline-form>
 			<div class="row">
-				<div class="col-3">
-					<app-info-panel></app-info-panel>
-				</div>
-				<div class="col-9 col-offset-1">
-					<!--<app-expense-table></app-expense-table>-->
+				<h1 class="content__title">Dashboard</h1>
+				<app-form></app-form>
+			</div>
+			<div class="row">
+			</div>
+			<div class="row">
+				<app-cards></app-cards>
+				<div class="col-9">
 					<app-table>
 						<template slot="theader">
-							<tr>
-								<th v-for="th in table.thead">{{ th }}</th>
-							</tr>
+							<thead>
+								<tr>
+									<th v-for="(th, i) in table.thead">
+										<div>
+											{{ th }} 
+											<div v-if="i !== table.thead.length - 1" class="table__sort">
+												<button type="button" class="btn btn--transparent">
+													<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" data-prefix="fas" data-icon="sort-up" class="svg-inline--fa fa-sort-up fa-w-10" role="img" viewBox="0 0 320 512" width="12">
+														<path fill="currentColor" d="M279 224H41c-21.4 0-32.1-25.9-17-41L143 64c9.4-9.4 24.6-9.4 33.9 0l119 119c15.2 15.1 4.5 41-16.9 41z"/>
+													</svg>
+												</button>
+												<button type="button" class="btn btn--transparent">
+													<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" data-prefix="fas" data-icon="sort-down" class="svg-inline--fa fa-sort-down fa-w-10" role="img" viewBox="0 0 320 512" width="12">
+														<path fill="currentColor" d="M41 288h238c21.4 0 32.1 25.9 17 41L177 448c-9.4 9.4-24.6 9.4-33.9 0L24 329c-15.1-15.1-4.4-41 17-41z"/>
+													</svg>
+												</button>
+											</div>
+										</div>
+									</th>
+								</tr>
+							</thead>
 						</template>
-						<template 
-							slot="tbody" 
-							v-for="(item, index) in expenses.items"
-							:id="index">
-							<app-td :item="item" :id="index"></app-td>
+						<template
+							slot="tbody"
+							v-for="(item, i) in expenses.items">
+							<tbody>
+								<app-td :item="item" :id="i"></app-td>
+							</tbody>
 						</template>
 					</app-table>
 				</div>
 			</div>
 		</main>
-		<app-footer></app-footer>
 	</div>
 </template>
 
 <script>
-	import Header from '@/components/Header.vue'
-	import Sidebar from '@/components/Sidebar.vue'
-	import Table from '@/components/generics/Table.vue'
-	import Footer from '@/components/Footer.vue'
-	import Inlineform from '@/components/dashboard/InlineForm.vue'
-	import Infopanel from '@/components/dashboard/InfoPanel.vue'
-	import Td from '@/components/dashboard/ExpenseTd.vue'
+	import Header from '@/components/partials/Header.vue'
+	import Sidebar from '@/components/partials/Sidebar.vue'
+	import Footer from '@/components/partials/Footer.vue'
+	import Form from '@/components/partials/newExpenseForm.vue'
+	import Table from '@/components/partials/Table.vue'
+	import Td from '@/components/partials/ExpenseTd.vue'
+	import Cards from '@/components/partials/InfoPanel.vue'
 
 	import { mapGetters } from 'vuex'
 	import moment from 'moment'
@@ -46,7 +66,7 @@
 		data() {
 			return {
 				table: {
-					thead: ['Nom', 'Catégorie', 'Date', 'Montant', 'Type', 'Actions'],
+					thead: ['Type', 'Catégorie', 'Date', 'Montant', 'Actions'],
 					tbody: ''
 
 				},
@@ -74,50 +94,31 @@
 			appHeader: Header,
 			appSidebar: Sidebar,
 			appFooter: Footer,
-			appInlineForm: Inlineform,
-			appInfoPanel: Infopanel,
+			appForm: Form,
 			appTable: Table,
-			appTd: Td
+			appTd: Td,
+			appCards: Cards,
 		}
 	}
 </script>
 
-<style lang="scss">
-	td {
-		&.isEdited {
-			> span { display: none; }
-			> *:not(span) { display: flex; }
-		}
-		&.notEdited {
-			> span { display: flex; }
-			> *:not(span) { display: none; }
-		}
-	}
-	.dashboard {
-		display: grid;
-		grid-template-columns: 70px 1fr;
-		grid-template-rows: 70px 1fr 1fr;
-		grid-column-gap: 1rem;
-		background-color: rgb(245,246,250);
-		height: 100%;
-	}
-	.content {
-		grid-column-start: 2;
-		grid-row-start: 2;
-		grid-row-end: 3;
-		padding: 1rem;
-	}
-
-	.card { 
-
-		&-row {
-
-			&:nth-child(2) {
-				border-left: 1px solid rgb(238,238,242);
+<style lang="scss" scoped> 
+	.content > .row:first-child { margin-top: 2rem; }
+	table {
+		tbody {
+			td:nth-child(3) {
+				font-weight: 400;
 			}
-			&:last-child {
-				align-items: center;
-				border-top: 1px solid rgb(238,238,242);
+		}
+	}
+	.table {
+		&__sort {
+			display: flex;
+			flex-direction: column;
+			margin-left: 0.5rem;
+
+			svg {
+  				color: rgb(212, 216, 223);
 			}
 		}
 	}

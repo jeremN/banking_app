@@ -12,7 +12,9 @@ const mutations = {
 		state.items = payload
 	},
 	Add_Searches( state, payload ) {
+		console.log(state.searches)
 		state.searches = payload
+		console.log(state.searches)
 	},
 	Init_Expenses( state, payload ) {
 		state.expenses = []
@@ -27,18 +29,13 @@ const mutations = {
 	New_MonthExpense( state, payload ) {
 		//Push new month datas in the obj, filtered by savedYear
 		state.expenses.filter( item => {
-			console.log(item)
 			if( item.year === state.savedYear ) {
-
-				if(item.months !== []) {
-					item.months = []
-				}
 				item.months.push(payload)
 			}
 		})
 	},
 	New_Year( state ) {
-		state.expenses.unshift({
+		state.expenses.push({
 			year: appUtils.currentYear(),
 			months: false
 		})
@@ -62,6 +59,7 @@ const actions = {
 			temporary: fakeDatas.temporary,
 			searches: {
 				categories: fakeDatas.searches.categories,
+				names: fakeDatas.searches.names
 			}
 		})
 		.then(res => console.log(res))
@@ -87,7 +85,7 @@ const actions = {
 		const searches = state.searches
 
 		//If key don't exist push it into array, else return false
-		// searches.names.indexOf(payload.name) === -1 ? searches.names.push(payload.name) : false
+		searches.names.indexOf(payload.name) === -1 ? searches.names.push(payload.name) : false
 		searches.categories.indexOf(payload.category) === -1 ? searches.categories.push(payload.category) : false
 
 		//add to databse
@@ -158,6 +156,7 @@ const actions = {
 		}
 
 		if( state.items ) {
+		
 			//Make all value number type (avoid string)
 			const arr = state.items.map( item => {
 				return {
@@ -213,15 +212,12 @@ const actions = {
 		if( !state.expenses ) {
 			commit('Init_Expenses')
 		}
-		console.log(datas)
-		console.log(state.expenses)
 		commit('New_MonthExpense', datas)
 
 		if( isNewYear ) {
 			commit('New_Year')
 			firebase.database().ref(`/users/${rootState.auth.user.id}/datas/temporary/activeYear`).set(appUtils.currentYear())		
 		}
-		console.log(state.expenses)
 		dispatch('Post_MonthExpenses')
 	},
 	Post_MonthExpenses( {commit, state, rootState} ) {
