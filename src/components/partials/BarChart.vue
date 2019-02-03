@@ -1,12 +1,22 @@
 <template>
 	<div class="bar__chart" ref="barChart">
-		<div class="card__header">
+		<div class="card__header card__header--withLegend">
 			<h2>{{ title }}</h2>
+			<div class="legend">
+				<div>
+					<span class="square square--blue"></span>
+					Revenus
+				</div>
+				<div>
+					<span class="square square--red"></span>
+					Dépenses
+				</div>
+			</div>
 		</div>
 
 		<div class="card__body">
 			<svg id="barChart" 
-				:style="{ width: settings.width + margin.left + margin.right, height: settings.height +margin.top + margin.bottom, marginTop: margin.top}"
+				:style="{ width: settings.width + margin.left + margin.right, height: settings.height + margin.top + margin.bottom, marginTop: margin.top}"
 				v-if="scales">
 				<g class="chart__y__axis"
 					:height="settings.height + margin.top + margin.bottom"
@@ -76,12 +86,12 @@
 			</svg>
 		</div>
 		<div 
-			class="tooltip" 
+			class="card tooltip" 
 			v-if="tooltip.isVisible" 
-			:style="{ transform: `translate(${tooltip.x}px, ${tooltip.y}px)` }">
+			:style="{transform: `translate(${tooltip.x}px, ${tooltip.y}px)`}">
 			<p>
-				{{ tooltip.title | monthFr }} 
-				<br> 
+				<b>{{ tooltip.title | monthFr }}</b>
+				<br><br> 
 				{{ tooltip.value | devise}} 
 			</p>
 		</div>
@@ -95,7 +105,7 @@
 		data() {
 			return {
 				settings: {
-					width: 700,
+					width: 1700,
 					height: 350,
 				},
 				margin: {
@@ -166,8 +176,8 @@
 				this.tooltip.isVisible = true
 				this.tooltip.title = name
 				this.tooltip.value = value
-				this.tooltip.x = event.layerX + 70
-				this.tooltip.y = event.layerY + 20
+				this.tooltip.x = event.clientX - 10
+				this.tooltip.y = event.clientY + 10
 			},
 		}
 	}
@@ -201,6 +211,7 @@
 		height: auto;
 		display: flex;
 		flex-direction: column;
+		position: relative;
 	}
 	.card {
 		&__header {
@@ -211,6 +222,12 @@
 				font-size: 1.15rem;
 				font-weight: 700;
 			}
+
+			&--withLegend {
+				display: flex;
+				align-items: center;
+				justify-content: flex-end;
+			}
 		}
 		&__body {
 			position: relative;
@@ -218,10 +235,11 @@
 			align-items: center;
 			justify-content: center;
 		}
+
 	}
 	.tooltip {
 		background-color: #fff;
-		position: absolute;
+		position: fixed;
 		top: 0;
 		left: 0;
 		background-color: #fff;
@@ -229,6 +247,34 @@
 		box-shadow: 0 4px 24px -1px rgba(0,0,0,0.1);
 		padding: 1em;
 		font-size: 14px;
+
+		b {
+			text-transform: capitalize;
+			font-weight: 700;
+		}
+	}
+	.legend {
+		display: flex;
+		align-self: flex-end;
+		margin-left: auto;
+
+		> div {
+			display: flex;
+			align-items: center;
+			font-size: 14px;
+			font-weight: 700;
+			margin-right: 0.5rem; 
+		}
+	}
+	.square {
+		width: 10px;
+		height: 10px;
+		display: flex;
+		margin-right: 0.5em;
+
+
+		&--red { background-color: #e74c3c; }
+		&--blue { background-color: #3498db; }
 	}
    .list-enter-active, .list-leave-active {
       transition: all 1s;

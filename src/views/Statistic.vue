@@ -77,18 +77,13 @@
 				</div>
 			</div>
 			<div class="row" v-if="sort === 'chart'">
-				<div class="col-8 card">
+				<div class="col-12 card">
 					<app-bar-chart
 						:title="`Revenu &amp; Dépenses ${filters.checked}`"
 						:datas="calculatePath"
 						:xVal="values.x"
 						:yVal="values.y">
 					</app-bar-chart>
-				</div>
-				<div class="col-4 card">
-					<div class="card__header">
-						<h2>Graph</h2>
-					</div>
 				</div>
 			</div>
 			<div class="row" v-if="sort === 'table'">
